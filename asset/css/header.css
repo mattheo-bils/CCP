@@ -1,7 +1,53 @@
-.material-symbols-outlined {
-  font-variation-settings:
-  'FILL' 0,
-  'wght' 400,
-  'GRAD' 0,
-  'opsz' 24
+header{
+  display: flex;
+  align-items: center;
+  gap: 100px;
+  background-color: #131937;
+}
+header button{
+  margin-left: 300px;
+  border-radius: 20px;
+  padding: 10px 5px;
+  background-color: #c44444;
+}
+button a {
+  color: #ffffff;
+}
+header a {
+  text-decoration: none;
+}
+
+.hyperlien {
+  display: flex;
+  gap: 30px;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #f1f1f1;
+    border-radius: 24px;
+    padding: 8px 16px;
+    margin-left: 30px;
+}
+
+.search-bar svg {
+    cursor: pointer;
+    flex-shrink: 0;
+    fill: #5f6368;
+}
+
+.search-bar input {
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 16px;
+    width: 400px;
+}
+
+header img {
+  width: 142px;
+  height: 126px;
+  mix-blend-mode:luminosity;
 }
