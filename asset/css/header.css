@@ -4,6 +4,10 @@ header{
   gap: 100px;
   background-color: #131937;
 }
+header a {
+  color: #ffffff;
+}
+
 header button{
   margin-left: 300px;
   border-radius: 20px;
