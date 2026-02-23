@@ -1,0 +1,25 @@
+footer{
+    background-color: #000000;
+    display: flex;
+    gap: 200px;
+    padding: 20px 30px;
+}
+footer a{
+    color: #ffffff;
+    text-decoration: none;
+}
+footer img {
+    width: 148px;
+    height: 138px;
+    mix-blend-mode: screen;
+}
+
+.footer {
+    display: flex;
+    align-items: center;
+    gap: 200px;
+}
+.footer div {
+    display: flex;
+    flex-direction: column;
+}
