@@ -1,10 +1,12 @@
 body{
-    margin: 0;
+    margin: auto;
     background-color: #131739;
     color: #ffffff;
     box-sizing: border-box;
     max-width: auto;
+    overflow-x: hidden;
 }
+
  .hero{
     background-image: url(../img/fond_dragon_ball.webp);
     background-size: cover;
@@ -44,16 +46,104 @@ body{
     font-size: 40px;
  }
 
- .fullcard{
+ .categorie{
     display: flex;
     gap: 90px;
     margin-left: 50px;
+    width: 200%;
+    overflow-x: auto;
+ }
+
+ #kodomo {
+    background-image: url(../img/illustr_kodomo.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 600px;
+    height: 300px;
+    display: flex;
+    justify-content:start;
+    align-items: center;
+    border-radius: 10px;
+ }
+
+ #shonen {
+    background-image: url(../img/illustr_shonen.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 600px;
+    height: 300px;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    border-radius: 10px;
+ }
+
+ #shojo {
+    background-image: url(../img/illustr_shojo.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 600px;
+    height: 300px;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    border-radius: 10px;
+ }
+
+ #seinen {
+    background-image: url(../img/illustr_seinen.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 600px;
+    height: 300px;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    border-radius: 10px;
+ }
+
+ #josei {
+    background-image: url(../img/illustr_josei.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 600px;
+    height: 300px;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    border-radius: 10px;
+ }
+
+ .button_categorie {
+    background-color: #c44444;
+    border-radius: 10px;
+    padding: 5px 10px;
+    border: none;
+    margin-left: 60px;
+    margin-top: 60px;
+ }
+
+ .button_categorie a{
+    text-decoration: none;
+ }
+
+ .fullcard{
+    display: flex;
+    gap: 60px;
+    margin-left: 50px;
     margin-bottom: 100px;
+ }
+
+ .card {
+    background-color: #eeeeee;
+    color: #000000;
+    border-radius: 10px;
  }
 
  .card img{
     width: 250px;
     height: 350px;
+    object-fit:fill;
     border-radius: 10px;
  }
 
