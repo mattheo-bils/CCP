@@ -39,20 +39,29 @@
             <section>
                 <h3>Catégories</h3>
                 <div class="categorie">
-                    <div id="kodomo">
-                        <button class="button_categorie"><a href="catalogue.html">Kodomo</a></button>
-                    </div>
-                    <div id="shonen">
-                        <button class="button_categorie"><a href="catalogue.html">Shonen</a></button>
-                    </div>
-                    <div id="shojo">
-                        <button class="button_categorie"><a href="catalogue.html">Shojo</a></button>
-                    </div>
-                    <div id="seinen">
-                        <button class="button_categorie"><a href="catalogue.html">Seinen</a></button>
-                    </div>
-                    <div id="josei">
-                        <button class="button_categorie"><a href="catalogue.html">Josei</a></button>
+                    <div class="carousel">
+                        <div class="carousel_inner">
+                            <div id="kodomo" class="slide">
+                                <button class="button_categorie"><a href="catalogue.html">Kodomo</a></button>
+                            </div>
+                            <div id="shonen" class="slide">
+                                <button class="button_categorie"><a href="catalogue.html">Shonen</a></button>
+                            </div>
+                            <div id="shojo" class="slide">
+                                <button class="button_categorie"><a href="catalogue.html">Shojo</a></button>
+                            </div>
+                            <div id="seinen" class="slide">
+                                <button class="button_categorie"><a href="catalogue.html">Seinen</a></button>
+                            </div>
+                            <div id="josei" class="slide">
+                                <button class="button_categorie"><a href="catalogue.html">Josei</a></button>
+                            </div>
+                        </div>
+                        <div class="carousel_control">
+                            <button id="prev"></button>
+                            <button id="next"></button>
+                        </div>
+                        <div class="carousel_dots"></div>
                     </div>
                 </div>
             </section>
@@ -147,5 +156,7 @@
             </div>
         </div>
     </footer>
+    <script src="asset/js/data.js"></script>
+    <script src="asset/js/index.js"></script>
 </body>
 </html>
