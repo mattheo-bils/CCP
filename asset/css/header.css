@@ -23,7 +23,8 @@ header a {
 
 .hyperlien {
   display: flex;
-  gap: 30px;
+  gap: 50px;
+  margin-left: 30px;
 }
 
 .search-bar {
@@ -33,7 +34,7 @@ header a {
     background-color: #f1f1f1;
     border-radius: 24px;
     padding: 8px 16px;
-    margin-left: 30px;
+    margin-left: 200px;
 }
 
 .search-bar svg {
