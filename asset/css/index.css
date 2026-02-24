@@ -2,4 +2,86 @@ body{
     margin: 0;
     background-color: #131739;
     color: #ffffff;
+    box-sizing: border-box;
+    max-width: auto;
 }
+ .hero{
+    background-image: url(../img/fond_dragon_ball.webp);
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 600px;
+    position: relative;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 40px;
+ }
+
+ #button_hero{
+    display: flex;
+    gap: 50px;
+    margin-left: 200px;
+ }
+
+ #button_hero button{
+    border-radius: 20px;
+    background-color: #c44444;
+    padding: 12px 12px;
+    border: none;
+ }
+
+ #button_hero button a {
+    text-decoration: none;
+    font-size: 18px;
+ }
+
+ #titre_hero {
+    margin-left: 150px;
+ }
+ #titre_hero h2 {
+    font-size: 40px;
+ }
+
+ .fullcard{
+    display: flex;
+    gap: 90px;
+    margin-left: 50px;
+    margin-bottom: 100px;
+ }
+
+ .card img{
+    width: 250px;
+    height: 350px;
+    border-radius: 10px;
+ }
+
+ .card_text {
+    display: flex;
+    justify-content: space-between;
+ }
+
+ .card_info {
+    display: flex;
+    justify-content: space-between;
+    align-content: center;
+ }
+
+ .card_info .ajouter {
+    align-self: center;
+ }
+
+ .ajouter {
+    border-radius: 20px;
+    padding: 5px 5px;
+    background-color: #c44444;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+ }
+
+ h3 {
+    margin-left: 50px;
+    font-size: 30px;
+ }
