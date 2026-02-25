@@ -6,6 +6,13 @@ body{
     max-width: auto;
     overflow-x: hidden;
 }
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
+}
 
  .hero{
     background-image: url(../img/fond_dragon_ball.webp);
@@ -73,11 +80,15 @@ body{
  }
 
  .carousel_control button{
-    background-color: #c44444;
+    background-color: #131739;
     padding: 10px;
-    border-radius: 20px;
+    border-radius: 50px;
     border: none;
     cursor: pointer;
+ }
+
+ .carousel_control button .material-symbols-outlined{
+   color: #eeeeee;
  }
 
  .carousel_dots {
@@ -85,7 +96,6 @@ body{
     z-index: 5;
     left: 50%;
     right: 50%;
-    bottom: 10%;
     display: flex;
     justify-content: center;
  }
