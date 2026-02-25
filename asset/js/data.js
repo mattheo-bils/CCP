@@ -77,7 +77,7 @@ const produits = [
         tome: 1,
         prix: 7.25,
         categorie: "Kodomo",
-        image: "asset/img/dr_slump_tome_2_page_de_couverture.jpg"
+        image: "asset/img/dr_slump_tome_1_page_de_couverture.jpg"
     },
     {
         id: 11,
@@ -85,7 +85,7 @@ const produits = [
         tome: 1,
         prix: 7.50,
         categorie: "shojo",
-        image: "asset/img/fruit_basket_tome_2_page_de_couverture.jpg"
+        image: "asset/img/fruit_basket_tome_1_page_de_couverture.jpg"
     },
     {
         id: 12,
