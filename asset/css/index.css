@@ -187,6 +187,10 @@ body{
     text-decoration: none;
  }
 
+ .tendance h3{
+   margin-top: 50px;
+ }
+
  .fullcard{
     display: flex;
     gap: 60px;
