@@ -4,8 +4,8 @@ const range = document.querySelector('input[type="range"]');
 
 
 range.min = 0;
-range.max = 20;
-range.value = 20;
+range.max = 10;
+range.value = 10;
 
 function afficherProduits(liste) {
     container.innerHTML = '';
