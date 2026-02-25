@@ -213,13 +213,15 @@ body{
 
  .card_text {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
+    gap: 90px;
  }
 
  .card_info {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-content: center;
+    gap: 90px;
  }
 
  .card_info .ajouter {

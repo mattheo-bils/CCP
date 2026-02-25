@@ -4,11 +4,48 @@ body{
     background-color: #131937;
 }
 
+main{
+    display: flex;
+    justify-content: space-around;
+}
+
+.filtre{
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    flex-wrap: nowrap;
+    background-color: #313131;
+    border:solid 1px #eeeeee;
+    margin-top: 100px;
+    gap: 10px;
+    width: 200px;
+    height: 350px;
+    margin-left: 30px;
+    color: #ffffff;
+    border-radius: 10px;
+}
+
+.filtre button{
+    background-color: #313131;
+    border: none;
+    color: #ffffff;
+    margin-top: 10px;
+}
+
+.range h3{
+    margin-left: 10px;
+}
+
+.filtre label{
+    display: flex;
+    color: #ffffff;
+    margin-left:10px ;
+}
+
 .fullcard{
     display: flex;
     flex-direction: column;
     gap: 60px;
-    margin-left: 50px;
     margin-top: 100px;
     margin-bottom: 100px;
  }
@@ -35,13 +72,15 @@ body{
 
  .card_text {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
+    gap: 90px;
  }
 
  .card_info {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-content: center;
+    gap: 90px;
  }
 
  .card_info .ajouter {
