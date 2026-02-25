@@ -104,3 +104,19 @@ main{
     border: none;
     cursor: pointer;
  }
+
+ .page {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+    gap: 30px;
+ }
+
+ .page button{
+    padding: 5px 15px;
+    border-radius: 10px;
+    border: none;
+    background-color: #c44444;
+    color: #ffffff;
+    cursor: pointer;
+ }
