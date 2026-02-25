@@ -141,7 +141,7 @@ const produits = [
         tome: 1,
         prix: 9.60,
         categorie: "shojo",
-        image: "asset/img/bleach_tome_2_page_de_couverture.jpg"
+        image: "asset/img/sakura_chasseuse_de_carte_tome_1_page_de_couverture.jpg"
     },
     {
         id: 19,
@@ -149,7 +149,7 @@ const produits = [
         tome: 1,
         prix: 9.30,
         categorie: "seinen",
-        image: "asset/img/vinland_saga_tome_2_page_de_couverture.jpg"
+        image: "asset/img/vinland_saga_tome_1_page_de_couverture.jpg"
     },
     {
         id: 20,
@@ -157,6 +157,6 @@ const produits = [
         tome: 1,
         prix: 9.10,
         categorie: "Kodomo",
-        image: "asset/img/yo-kai_watch_tome_2_page_de_couverture.jpg"
+        image: "asset/img/yo-kai_watch_tome_1_page_de_couverture.jpg"
     },
 ];
