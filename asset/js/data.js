@@ -68,7 +68,7 @@ const produits = [
         titre: "Doraemon",
         tome: 2,
         prix: 7.80,
-        categorie: "Kodomo",
+        categorie: "kodomo",
         image: "asset/img/doraemon_tome_1_page_de_couverture.jpg"
     },
     {
@@ -76,7 +76,7 @@ const produits = [
         titre: "Dr Slump",
         tome: 1,
         prix: 7.25,
-        categorie: "Kodomo",
+        categorie: "kodomo",
         image: "asset/img/dr_slump_tome_1_page_de_couverture.jpg"
     },
     {
@@ -156,7 +156,7 @@ const produits = [
         titre: "Yo-kai Watch",
         tome: 1,
         prix: 9.10,
-        categorie: "Kodomo",
+        categorie: "kodomo",
         image: "asset/img/yo-kai_watch_tome_1_page_de_couverture.jpg"
     },
 ];
