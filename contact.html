@@ -27,8 +27,8 @@
     <main>
         <div role="form" id="send-comment" aria-label="ajouter un commentaires">
         <form action="" method="post">
-            <div>
-                <section>
+            <div class="info">
+                <section class="nameinfo">
                     <article id="nom">
                         <label class="nom" for="name" aria-label="nameinfo">nom</label>
                         <input type="text" class="nom" placeholder="entrez votre nom" required>
@@ -37,28 +37,25 @@
                         <label class="prenom" for="prenom" aria-label="prenominfo">prenom</label>
                         <input type="text" class="prenom" placeholder="entrez votre prenom" required>
                     </article>
+                </section>
+                <section>
                     <article id="tel">
                         <aside>
                             <label class="tel" for="tel" aria-label="phoneinfo">tel</label>
                             <input type="tel" class="tel"  placeholder="entrez votre numero" pattern="[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}" required>
                         </aside>
                     </article>
+                    <article id="mail">
+                        <label class="mail" for="mail" aria-label="mailinfo">mail</label>
+                        <input type="text" class="mail" placeholder="entrez votre mail" required>
+                    </article>
                 </section>
-                <section>
-                    
                     <article id="message">
                         <aside>
                             <label class="message" aria-label="msginfo">message</label>
                             <textarea name="user_message" id="msg" placeholder="entrer un message" required></textarea>
                         </aside>
                     </article>
-                </section>
-                <section>
-                    <article id="mail">
-                        <label class="mail" for="mail" aria-label="mailinfo">mail</label>
-                        <input type="text" class="mail" placeholder="entrez votre mail" required>
-                    </article>
-                </section>
                 <input type="submit" value="confirmer">
             </div>
         </form>
