@@ -4,6 +4,10 @@ body{
     color: #ffffff;
 }
 
+main{
+    margin-top: 50px;
+}
+
 .info{
     display: flex;
     flex-direction: column;
@@ -16,4 +20,62 @@ body{
     display: flex;
     justify-content: center;
     gap: 20px;
+}
+
+#nom{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.nom{
+    border-radius: 20px;
+    border: none;
+    width: 200px;
+    height: 20px;
+}
+
+#prenom{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.prenom{
+    border-radius: 20px;
+    border: none;
+    width: 200px;
+    height: 20px;
+}
+
+.contact{
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+#tel{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.tel{
+    border-radius: 20px;
+    border: none;
+    width: 425px;
+    height: 20px;
+}
+
+#mail{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.mail{
+    border-radius: 20px;
+    border: none;
+    width: 425px;
+    height: 20px;
 }
