@@ -40,6 +40,7 @@ a{
 
 .description{
     color: #ffffff;
+    width: 25%;
 }
 
 .description h3{
@@ -52,9 +53,36 @@ a{
     border-bottom: solid 1px #ffffff;
 }
 
+.genre{
+    display: flex;
+    justify-content: space-between;
+}
+
+.auteur{
+    display: flex;
+    justify-content: space-between;
+    border-bottom:solid 1px #ffffff;
+}
+
+.button_suite{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.button_suite button{
+    border-radius: 20px;
+    border: none;
+    background-color: #c44444;
+    color: #ffffff;
+    padding: 3px 15px;
+    cursor: pointer;
+}
+
 .suggestion h3{
     font-size: 30px;
     color: #ffffff;
+    padding-left: 115px;
 }
 
 .fullcard{

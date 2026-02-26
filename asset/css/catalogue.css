@@ -70,6 +70,7 @@ main{
     background-color: #eeeeee;
     color: #000000;
     border-radius: 10px;
+    width: 250px;
  }
 
  .card img{
@@ -81,19 +82,27 @@ main{
 
  .card_text {
     display: flex;
-    justify-content: space-around;
-    gap: 90px;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 30px;
  }
 
  .card_info {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-content: center;
-    gap: 90px;
  }
 
  .card_info .ajouter {
     align-self: center;
+ }
+
+ .card_text p, .card_info p {
+   margin: 0;
+   overflow: hidden;
+   white-space: nowrap;
+   text-overflow: ellipsis;
+   max-width: 150px;
  }
 
  .ajouter {
