@@ -2,3 +2,86 @@ body{
     margin: 0;
     background-color: #131937;
 }
+.chemin{
+    color: #ffffff;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 10px;
+    margin-left: 100px;
+    font-size: 20px;
+}
+a{
+    text-decoration: none;
+    color: #ffffff;
+}
+
+.image {
+    display: flex;
+    flex-direction: column;
+    gap: 100px;
+    margin-top: 100px;
+    margin-left: 300px;
+}
+
+.image_affiche {
+    width: 20%; 
+}
+
+.image_autre {
+    width: 5%;
+    margin-left: 95px;
+    margin-bottom: 50px;
+}
+
+.suggestion h3{
+    font-size: 30px;
+    color: #ffffff;
+}
+
+.fullcard{
+    display: flex;
+    justify-content: space-around;
+    gap: 60px;;
+    margin-bottom: 100px;
+    margin-top: 50px;
+ }
+
+ .card {
+    background-color: #eeeeee;
+    color: #000000;
+    border-radius: 10px;
+ }
+
+ .card img{
+    width: 250px;
+    height: 350px;
+    object-fit:fill;
+    border-radius: 10px;
+ }
+
+ .card_text {
+    display: flex;
+    justify-content: space-around;
+    gap: 90px;
+ }
+
+ .card_info {
+    display: flex;
+    justify-content: space-around;
+    align-content: center;
+    gap: 90px;
+ }
+
+ .card_info .ajouter {
+    align-self: center;
+ }
+
+ .ajouter {
+    border-radius: 20px;
+    padding: 5px 5px;
+    background-color: #c44444;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+ }
