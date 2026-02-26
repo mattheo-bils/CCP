@@ -3,3 +3,24 @@ body{
     background-color: #131937;
     color: #ffffff;
 }
+
+.mention{
+    text-align: center;
+    font-size: 30px;
+    margin-bottom: 50px;
+}
+
+.loi{
+    margin-bottom: 50px;
+    width: 50%;
+    margin-left: 400px;
+}
+
+.legals{
+    margin-left: 400px;
+    margin-bottom: 100px;
+}
+
+.text{
+    width: 60%;
+}
