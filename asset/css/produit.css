@@ -16,6 +16,10 @@ a{
     color: #ffffff;
 }
 
+.produit{
+    display: flex;
+}
+
 .image {
     display: flex;
     flex-direction: column;
@@ -25,13 +29,27 @@ a{
 }
 
 .image_affiche {
-    width: 20%; 
+    width: 30%; 
 }
 
 .image_autre {
-    width: 5%;
-    margin-left: 95px;
+    width: 10%;
+    margin-left: 65px;
     margin-bottom: 50px;
+}
+
+.description{
+    color: #ffffff;
+}
+
+.description h3{
+    font-size: 30px;
+}
+
+.prix{
+    display: flex;
+    justify-content: space-between;
+    border-bottom: solid 1px #ffffff;
 }
 
 .suggestion h3{

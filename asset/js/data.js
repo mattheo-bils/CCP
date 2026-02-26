@@ -2,6 +2,7 @@ const produits = [
     {
         id: 1,
         titre: "Berserk",
+        auteur: "",
         tome: 1,
         prix: 7.20,
         categorie: "seinen",
@@ -11,6 +12,7 @@ const produits = [
     {
         id: 2,
         titre: "Dragon Ball",
+        auteur: "",
         tome: 35,
         prix: 7.20,
         categorie: "shonen",
@@ -20,6 +22,7 @@ const produits = [
     {
         id: 3,
         titre: "One Piece",
+        auteur: "",
         tome: 35,
         prix: 7.20,
         categorie: "shonen",
@@ -29,6 +32,7 @@ const produits = [
     {
         id: 4,
         titre: "Inazuma Eleven",
+        auteur: "",
         tome: 1,
         prix: 7.20,
         categorie: "kodomo",
@@ -38,6 +42,7 @@ const produits = [
     {
         id: 5,
         titre: "Vagabond",
+        auteur: "",
         tome: 1,
         prix: 7.20,
         categorie: "seinen",
@@ -47,6 +52,7 @@ const produits = [
     {
         id: 6,
         titre: "And",
+        auteur: "",
         tome: 1,
         prix: 6.99,
         categorie: "josei",
@@ -56,6 +62,7 @@ const produits = [
     {
         id: 7,
         titre: "Bleach",
+        auteur: "",
         tome: 2,
         prix: 7.80,
         categorie: "shonen",
@@ -65,6 +72,7 @@ const produits = [
     {
         id: 8,
         titre: "Demon Slayer",
+        auteur: "",
         tome: 1,
         prix: 7.40,
         categorie: "shonen",
@@ -74,6 +82,7 @@ const produits = [
     {
         id: 9,
         titre: "Doraemon",
+        auteur: "",
         tome: 2,
         prix: 7.80,
         categorie: "kodomo",
@@ -83,6 +92,7 @@ const produits = [
     {
         id: 10,
         titre: "Dr Slump",
+        auteur: "",
         tome: 1,
         prix: 7.25,
         categorie: "kodomo",
@@ -92,6 +102,7 @@ const produits = [
     {
         id: 11,
         titre: "Fruit Basket",
+        auteur: "",
         tome: 1,
         prix: 7.50,
         categorie: "shojo",
@@ -101,6 +112,7 @@ const produits = [
     {
         id: 12,
         titre: "Les Fleurs Du Passé",
+        auteur: "",
         tome: 1,
         prix: 8.60,
         categorie: "josei",
@@ -110,6 +122,7 @@ const produits = [
     {
         id: 13,
         titre: "Monster",
+        auteur: "",
         tome: 1,
         prix: 8.50,
         categorie: "seinen",
@@ -119,6 +132,7 @@ const produits = [
     {
         id: 14,
         titre: "Nana",
+        auteur: "",
         tome: 1,
         prix: 8.40,
         categorie: "shojo",
@@ -128,6 +142,7 @@ const produits = [
     {
         id: 15,
         titre: "Perfect World To Me",
+        auteur: "",
         tome: 1,
         prix: 9.10,
         categorie: "josei",
@@ -137,6 +152,7 @@ const produits = [
     {
         id: 16,
         titre: "Princess Jellyfish",
+        auteur: "",
         tome: 1,
         prix: 9.00,
         categorie: "josei",
@@ -146,6 +162,7 @@ const produits = [
     {
         id: 17,
         titre: "Sailor Moon",
+        auteur: "",
         tome: 1,
         prix: 9.50,
         categorie: "shojo",
@@ -155,6 +172,7 @@ const produits = [
     {
         id: 18,
         titre: "Sakura Chasseuse De Carte",
+        auteur: "",
         tome: 1,
         prix: 9.60,
         categorie: "shojo",
@@ -164,6 +182,7 @@ const produits = [
     {
         id: 19,
         titre: "Vinland Saga",
+        auteur: "",
         tome: 1,
         prix: 9.30,
         categorie: "seinen",
@@ -173,6 +192,7 @@ const produits = [
     {
         id: 20,
         titre: "Yo-kai Watch",
+        auteur: "",
         tome: 1,
         prix: 9.10,
         categorie: "kodomo",
