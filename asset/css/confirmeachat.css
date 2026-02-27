@@ -9,7 +9,7 @@ main{
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 30px;
   margin-top: 150px;
   margin-bottom: 200px;
 }
@@ -27,9 +27,12 @@ main{
 }
 
 .material-symbols-outlined {
+  font-size: 150px !important;
   font-variation-settings:
   'FILL' 0,
   'wght' 400,
   'GRAD' 0,
-  'opsz' 24
+  'opsz' 48;
+  
 }
+
