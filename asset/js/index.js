@@ -45,3 +45,17 @@
         });
     });
 })()
+// Rendre les cards de tendance cliquables
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll('.tendance .card').forEach(card => {
+        card.style.cursor = 'pointer';
+        const titre = card.querySelector('.card_text p:first-child').textContent.trim().toLowerCase();
+        const produit = produits.find(p => p.titre.toLowerCase() === titre);
+        if (produit) {
+            card.addEventListener('click', (e) => {
+                if (e.target.classList.contains('ajouter')) return;
+                window.location.href = `produit.html?id=${produit.id}`;
+            });
+        }
+    });
+});
