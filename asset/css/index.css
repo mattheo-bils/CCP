@@ -4,8 +4,14 @@ body{
     color: #ffffff;
     box-sizing: border-box;
     max-width: auto;
+    min-height: 100vh;
     overflow-x: hidden;
 }
+
+main{
+   flex: 1;
+}
+
 .material-symbols-outlined {
   font-variation-settings:
   'FILL' 0,
