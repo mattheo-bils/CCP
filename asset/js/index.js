@@ -45,7 +45,6 @@
         });
     });
 })()
-// Rendre les cards de tendance cliquables
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll('.tendance .card').forEach(card => {
         card.style.cursor = 'pointer';

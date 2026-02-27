@@ -39,7 +39,6 @@ function afficherProduits(liste) {
                 </div>
             `;
 
-            // Clic sur la card → page produit (sauf si clic sur bouton Ajouter)
             card.addEventListener('click', (e) => {
                 if (e.target.classList.contains('ajouter')) return;
                 window.location.href = `produit.html?id=${produit.id}`;

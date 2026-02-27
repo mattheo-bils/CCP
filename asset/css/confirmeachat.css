@@ -1,0 +1,35 @@
+body{
+    margin: 0;
+    background-color: #131931;
+    color: #ffffff;
+}
+
+main{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 150px;
+  margin-bottom: 200px;
+}
+
+.accueil{
+  background-color: #c44444;
+  border: none;
+  border-radius: 20px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.accueil a{
+  text-decoration: none;
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
+}
