@@ -57,3 +57,74 @@ header img {
   height: 126px;
   mix-blend-mode:luminosity;
 }
+
+@media (max-width: 700px) {
+  header {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 12px 16px;
+    align-items: center;
+  }
+
+  header > a:first-child {
+    flex: 1;
+  }
+
+  header img {
+    width: 90px;
+    height: auto;
+  }
+
+  /* Afficher le burger */
+  .burger {
+    display: flex;
+  }
+
+  /* Menu nav mobile : caché par défaut */
+  .nav-mobile {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    background-color: #080329;
+    padding: 12px 0 16px;
+    gap: 0;
+    order: 3;
+  }
+
+  .nav-mobile.open {
+    display: flex;
+  }
+
+  /* Liens de navigation dans le menu */
+  .hyperlien {
+    flex-direction: column;
+    gap: 0;
+    margin-left: 0;
+  }
+
+  .hyperlien a {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 16px;
+  }
+
+  /* Barre de recherche pleine largeur */
+  .search-bar {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 12px;
+  }
+
+  .search-bar input {
+    width: 100%;
+  }
+
+  /* Bouton se connecter */
+  .nav-mobile > button {
+    width: calc(100% - 32px);
+    margin: 8px 16px 0;
+    text-align: center;
+    padding: 10px;
+    margin-left: 16px;
+  }
+}
