@@ -2,7 +2,7 @@ const produits = [
     {
         id: 1,
         titre: "Berserk",
-        auteur: "",
+        auteur: "Kentaro Miura",
         tome: 1,
         prix: 7.20,
         categorie: "seinen",
@@ -12,7 +12,7 @@ const produits = [
     {
         id: 2,
         titre: "Dragon Ball",
-        auteur: "",
+        auteur: "Akira Toriyama",
         tome: 35,
         prix: 7.20,
         categorie: "shonen",
@@ -22,7 +22,7 @@ const produits = [
     {
         id: 3,
         titre: "One Piece",
-        auteur: "",
+        auteur: "Eichiro Oda",
         tome: 35,
         prix: 7.20,
         categorie: "shonen",
@@ -32,7 +32,7 @@ const produits = [
     {
         id: 4,
         titre: "Inazuma Eleven",
-        auteur: "",
+        auteur: "Tenya Yabuno",
         tome: 1,
         prix: 7.20,
         categorie: "kodomo",
@@ -42,7 +42,7 @@ const produits = [
     {
         id: 5,
         titre: "Vagabond",
-        auteur: "",
+        auteur: "takehiko Inoue",
         tome: 1,
         prix: 7.20,
         categorie: "seinen",
@@ -52,7 +52,7 @@ const produits = [
     {
         id: 6,
         titre: "And",
-        auteur: "",
+        auteur: "Marie Okazaki",
         tome: 1,
         prix: 6.99,
         categorie: "josei",
@@ -62,7 +62,7 @@ const produits = [
     {
         id: 7,
         titre: "Bleach",
-        auteur: "",
+        auteur: "Tite Kubo",
         tome: 2,
         prix: 7.80,
         categorie: "shonen",
@@ -72,7 +72,7 @@ const produits = [
     {
         id: 8,
         titre: "Demon Slayer",
-        auteur: "",
+        auteur: "Koyoharu Gotoge",
         tome: 1,
         prix: 7.40,
         categorie: "shonen",
@@ -82,7 +82,7 @@ const produits = [
     {
         id: 9,
         titre: "Doraemon",
-        auteur: "",
+        auteur: "Fujiko F. Fujio",
         tome: 2,
         prix: 7.80,
         categorie: "kodomo",
@@ -92,7 +92,7 @@ const produits = [
     {
         id: 10,
         titre: "Dr Slump",
-        auteur: "",
+        auteur: "Akira Toriyama",
         tome: 1,
         prix: 7.25,
         categorie: "kodomo",
@@ -102,7 +102,7 @@ const produits = [
     {
         id: 11,
         titre: "Fruit Basket",
-        auteur: "",
+        auteur: "Natsuki Takaya",
         tome: 1,
         prix: 7.50,
         categorie: "shojo",
@@ -112,7 +112,7 @@ const produits = [
     {
         id: 12,
         titre: "Les Fleurs Du Passé",
-        auteur: "",
+        auteur: "Haruka Kawachi",
         tome: 1,
         prix: 8.60,
         categorie: "josei",
@@ -122,7 +122,7 @@ const produits = [
     {
         id: 13,
         titre: "Monster",
-        auteur: "",
+        auteur: "Naoki Urasawa",
         tome: 1,
         prix: 8.50,
         categorie: "seinen",
@@ -132,7 +132,7 @@ const produits = [
     {
         id: 14,
         titre: "Nana",
-        auteur: "",
+        auteur: "Ai Yazawa",
         tome: 1,
         prix: 8.40,
         categorie: "shojo",
@@ -142,7 +142,7 @@ const produits = [
     {
         id: 15,
         titre: "Perfect World To Me",
-        auteur: "",
+        auteur: "Rie Aruga",
         tome: 1,
         prix: 9.10,
         categorie: "josei",
@@ -152,7 +152,7 @@ const produits = [
     {
         id: 16,
         titre: "Princess Jellyfish",
-        auteur: "",
+        auteur: "Akiko Higashimura",
         tome: 1,
         prix: 9.00,
         categorie: "josei",
@@ -162,7 +162,7 @@ const produits = [
     {
         id: 17,
         titre: "Sailor Moon",
-        auteur: "",
+        auteur: "Naoko Takeuchi",
         tome: 1,
         prix: 9.50,
         categorie: "shojo",
@@ -172,7 +172,7 @@ const produits = [
     {
         id: 18,
         titre: "Sakura Chasseuse De Carte",
-        auteur: "",
+        auteur: "CLAMP",
         tome: 1,
         prix: 9.60,
         categorie: "shojo",
@@ -182,7 +182,7 @@ const produits = [
     {
         id: 19,
         titre: "Vinland Saga",
-        auteur: "",
+        auteur: "Makoto Yukimura",
         tome: 1,
         prix: 9.30,
         categorie: "seinen",
@@ -192,7 +192,7 @@ const produits = [
     {
         id: 20,
         titre: "Yo-kai Watch",
-        auteur: "",
+        auteur: "Noryuki Konishi",
         tome: 1,
         prix: 9.10,
         categorie: "kodomo",
