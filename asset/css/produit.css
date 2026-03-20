@@ -26,6 +26,8 @@ a{
 
 .produit{
     display: flex;
+    justify-content: space-around;
+    gap: 30px;
 }
 
 .image {
@@ -33,22 +35,23 @@ a{
     flex-direction: column;
     gap: 100px;
     margin-top: 100px;
-    margin-left: 300px;
+    margin-left: 100px;
 }
 
 .image_affiche {
-    width: 30%; 
+    width: 300px; 
 }
 
 .image_autre {
-    width: 10%;
-    margin-left: 65px;
+    width: 100px;
+    margin-left: 100px;
     margin-bottom: 50px;
 }
 
 .description{
     color: #ffffff;
     width: 25%;
+    margin-top: 70px;
 }
 
 .description h3{
