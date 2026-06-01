@@ -1,7 +1,8 @@
 <?php
 $pageTitle = "Connexion / Inscription";
 $pageCss   = "pages.css";
-require_once 'includes/header.php';
+$basePath = '../';
+require_once 'header.php';
 ?>
 
 <main>
@@ -69,4 +70,5 @@ function switchTab(tab) {
 }
 </script>
 
-<?php require_once 'includes/footer.php'; ?>
+<?php $basePath = '../';
+require_once 'footer.php'; ?>

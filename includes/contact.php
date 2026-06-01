@@ -25,7 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-require_once 'includes/header.php';
+$basePath = '../';
+require_once 'header.php';
 ?>
 
 <main>
@@ -88,4 +89,5 @@ require_once 'includes/header.php';
     </div>
 </main>
 
-<?php require_once 'includes/footer.php'; ?>
+<?php $basePath = '../';
+require_once 'footer.php'; ?>

@@ -2,6 +2,7 @@
 $pageTitle = "Accueil";
 $pageCss   = "index.css";
 $pageJs    = ["index.js", "search.js"];
+$basePath = '';
 require_once 'includes/header.php';
 ?>
 
@@ -92,4 +93,5 @@ require_once 'includes/header.php';
     </section>
 </main>
 
-<?php require_once 'includes/footer.php'; ?>
+<?php $basePath = '';
+require_once 'includes/footer.php'; ?>

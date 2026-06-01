@@ -1,7 +1,8 @@
 <?php
 $pageTitle = "Commande confirmée";
 $pageCss   = "confirmeachat.css";
-require_once 'includes/header.php';
+$basePath = '../';
+require_once 'header.php';
 ?>
 
 <main class="confirm-page">
@@ -11,4 +12,5 @@ require_once 'includes/header.php';
     <a href="index.php" class="btn btn-primary">Revenir à l'accueil</a>
 </main>
 
-<?php require_once 'includes/footer.php'; ?>
+<?php $basePath = '../';
+require_once 'footer.php'; ?>

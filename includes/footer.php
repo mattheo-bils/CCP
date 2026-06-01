@@ -9,20 +9,20 @@
         <div class="footer-links">
             <div class="footer-col">
                 <h4>Légal</h4>
-                <a href="legals.php">Mentions légales</a>
-                <a href="politique.php">Politique de confidentialité</a>
+                <a href="<?= $basePath ?>legals.php">Mentions légales</a>
+                <a href="<?= $basePath ?>politique.php">Politique de confidentialité</a>
             </div>
             <div class="footer-col">
                 <h4>À propos</h4>
-                <a href="histoire.php">Qui sommes-nous</a>
-                <a href="faq.php">FAQ</a>
+                <a href="<?= $basePath ?>histoire.php">Qui sommes-nous</a>
+                <a href="<?= $basePath ?>faq.php">FAQ</a>
             </div>
             <div class="footer-col">
                 <h4>Service client</h4>
-                <a href="contact.php">Nous contacter</a>
-                <a href="retour.php">Faire un retour</a>
-                <a href="suivi.php">Suivi de commande</a>
-                <a href="livraison.php">Livraison</a>
+                <a href="<?= $basePath ?>contact.php">Nous contacter</a>
+                <a href="<?= $basePath ?>retour.php">Faire un retour</a>
+                <a href="<?= $basePath ?>suivi.php">Suivi de commande</a>
+                <a href="<?= $basePath ?>livraison.php">Livraison</a>
             </div>
         </div>
     </div>
@@ -31,11 +31,11 @@
     </div>
 </footer>
 <?php if (isset($pageJs)): ?>
-    <script src="asset/js/data.js"></script>
+    <script src="<?= $basePath ?>asset/js/data.js"></script>
     <?php foreach ((array)$pageJs as $js): ?>
-        <script src="asset/js/<?= htmlspecialchars($js) ?>"></script>
+        <script src="<?= $basePath ?>asset/js/<?= htmlspecialchars($js) ?>"></script>
     <?php endforeach; ?>
 <?php endif; ?>
-<script src="asset/js/header.js"></script>
+<script src="<?= $basePath ?>asset/js/header.js"></script>
 </body>
 </html>

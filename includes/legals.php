@@ -1,7 +1,8 @@
 <?php
 $pageTitle = "Mentions légales";
 $pageCss   = "legals.css";
-require_once 'includes/header.php';
+$basePath = '../';
+require_once 'header.php';
 
 $articles = [
     [
@@ -89,4 +90,5 @@ $articles = [
     </div>
 </main>
 
-<?php require_once 'includes/footer.php'; ?>
+<?php $basePath = '../';
+require_once 'footer.php'; ?>
