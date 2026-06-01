@@ -1,113 +1,77 @@
-body{
-    margin:0;
-    background-color: #131931;
-    color: #ffffff;
+/* =========================================================
+   CONTACT PAGE
+   ========================================================= */
+
+.contact-page {
+    max-width: 600px;
+    margin: 60px auto 80px;
+    padding: 0 24px;
+}
+.contact-page h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, 3rem);
+    letter-spacing: 0.08em;
+    color: var(--white);
+    margin-bottom: 8px;
+}
+.contact-page .sub {
+    color: var(--grey-400);
+    font-size: 0.9rem;
+    margin-bottom: 40px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+.form-group {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+.form-group label {
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--grey-400);
+    font-weight: 500;
+}
+.form-group input,
+.form-group textarea {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius-md);
+    color: var(--white);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    padding: 12px 16px;
+    transition: border-color var(--transition), background var(--transition);
+    width: 100%;
+}
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--red);
+    background: rgba(192,57,43,0.05);
+}
+.form-group input::placeholder,
+.form-group textarea::placeholder { color: var(--grey-600); }
+.form-group textarea {
+    height: 180px;
+    resize: vertical;
 }
 
-main{
-    margin-top: 50px;
-    flex: 1;
+.btn-submit {
+    width: 100%;
+    padding: 14px;
+    font-size: 1rem;
+    letter-spacing: 0.06em;
+    margin-top: 8px;
 }
 
-.info{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 100px;
-    gap: 30px;
-}
-
-.nameinfo{
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-}
-
-#nom{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.nom{
-    border-radius: 20px;
-    border: none;
-    width: 200px;
-    height: 20px;
-}
-
-#prenom{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.prenom{
-    border-radius: 20px;
-    border: none;
-    width: 200px;
-    height: 20px;
-}
-
-.contact{
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-}
-
-#tel{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.tel{
-    border-radius: 20px;
-    border: none;
-    width: 425px;
-    height: 20px;
-}
-
-#mail{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.mail{
-    border-radius: 20px;
-    border: none;
-    width: 425px;
-    height: 20px;
-}
-
-#message{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.message{
-    border-radius: 10px;
-    border: none;
-    width: 425px;
-    height: 300px;
-}
-
-textarea{
-    resize: none;
-}
-
-.confirmer{
-    border-radius: 20px;
-    border: none;
-    width: 300px;
-    height: 30px;
-    font-size: 20px;
-    background-color: #c44444;
-    color: #ffffff;
-    cursor: pointer;
+@media (max-width: 600px) {
+    .form-row { grid-template-columns: 1fr; }
 }

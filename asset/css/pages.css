@@ -1,0 +1,216 @@
+/* =========================================================
+   PANIER PAGE
+   ========================================================= */
+
+.panier-page {
+    max-width: 1000px;
+    margin: 50px auto 80px;
+    padding: 0 24px;
+}
+.panier-page h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, 3rem);
+    letter-spacing: 0.08em;
+    margin-bottom: 32px;
+}
+
+.panier-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: var(--navy-light);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    margin-bottom: 12px;
+}
+.panier-item img {
+    width: 70px; height: 100px;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+}
+.panier-item-info { flex: 1; }
+.panier-item-title {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    letter-spacing: 0.05em;
+}
+.panier-item-price {
+    color: var(--gold-light);
+    font-weight: 700;
+    margin-top: 4px;
+}
+.panier-qty {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.panier-qty button {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: transparent;
+    color: var(--white);
+    font-size: 1.1rem;
+    transition: background var(--transition);
+}
+.panier-qty button:hover { background: var(--red); border-color: var(--red); }
+.panier-qty span { min-width: 24px; text-align: center; font-weight: 700; }
+.panier-remove {
+    background: transparent;
+    border: none;
+    color: var(--grey-400);
+    transition: color var(--transition);
+    font-size: 20px;
+}
+.panier-remove:hover { color: var(--red); }
+
+.panier-summary {
+    background: var(--navy-light);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    margin-top: 24px;
+}
+.panier-summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    font-size: 0.9rem;
+}
+.panier-total {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px 0 20px;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    letter-spacing: 0.05em;
+}
+.panier-total span:last-child { color: var(--gold-light); }
+.panier-empty {
+    text-align: center;
+    padding: 80px 24px;
+    color: var(--grey-400);
+}
+.panier-empty .material-symbols-outlined { font-size: 64px !important; margin-bottom: 16px; }
+
+/* =========================================================
+   ACHAT / CHECKOUT
+   ========================================================= */
+
+.achat-page {
+    max-width: 680px;
+    margin: 50px auto 80px;
+    padding: 0 24px;
+}
+.achat-page h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, 3rem);
+    letter-spacing: 0.08em;
+    margin-bottom: 32px;
+}
+.achat-section {
+    background: var(--navy-light);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    margin-bottom: 20px;
+}
+.achat-section h3 {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    letter-spacing: 0.08em;
+    color: var(--red);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+}
+
+/* =========================================================
+   COMPTE PAGE
+   ========================================================= */
+
+.compte-page {
+    max-width: 480px;
+    margin: 80px auto;
+    padding: 0 24px;
+    text-align: center;
+}
+.compte-card {
+    background: var(--navy-light);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius-lg);
+    padding: 48px 36px;
+    box-shadow: var(--shadow-card);
+}
+.compte-card h1 {
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+}
+.compte-card .sub {
+    color: var(--grey-400);
+    font-size: 0.9rem;
+    margin-bottom: 36px;
+}
+.compte-tabs {
+    display: flex;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 28px;
+}
+.compte-tab {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--grey-400);
+    padding: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: color var(--transition);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+}
+.compte-tab.active {
+    color: var(--white);
+    border-bottom-color: var(--red);
+}
+.compte-form .form-group {
+    text-align: left;
+    margin-bottom: 16px;
+}
+.compte-form input {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius-md);
+    color: var(--white);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    padding: 12px 16px;
+    width: 100%;
+    transition: border-color var(--transition);
+}
+.compte-form input:focus {
+    outline: none;
+    border-color: var(--red);
+}
+.compte-form input::placeholder { color: var(--grey-600); }
+.compte-form label {
+    display: block;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--grey-400);
+    margin-bottom: 8px;
+    text-align: left;
+}
+.compte-form .btn { width: 100%; margin-top: 8px; padding: 14px; font-size: 1rem; }
+.compte-link {
+    color: var(--grey-400);
+    font-size: 0.85rem;
+    margin-top: 16px;
+    display: block;
+    transition: color var(--transition);
+}
+.compte-link:hover { color: var(--white); }
+.compte-link span { color: var(--red); }

@@ -1,32 +1,54 @@
-body {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    margin: 0;
-    background-color: #131931;
-    color: #ffffff;
-}
+/* =========================================================
+   LEGALS PAGE
+   ========================================================= */
 
-main {
-    flex: 1;
+.legals-page {
+    max-width: 860px;
+    margin: 60px auto 80px;
+    padding: 0 24px;
 }
-.mention{
+.legals-page h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
+    letter-spacing: 0.08em;
     text-align: center;
-    font-size: 30px;
-    margin-bottom: 50px;
+    margin-bottom: 12px;
+}
+.legals-intro {
+    color: var(--grey-400);
+    font-size: 0.9rem;
+    text-align: center;
+    margin-bottom: 52px;
+    line-height: 1.7;
 }
 
-.loi{
-    margin-bottom: 50px;
-    width: 50%;
-    margin-left: 400px;
+.legals-article {
+    margin-bottom: 40px;
+    padding: 28px;
+    background: var(--navy-light);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: var(--radius-md);
+    border-left: 3px solid var(--red);
 }
-
-.legals{
-    margin-left: 400px;
-    margin-bottom: 100px;
+.legals-article h2 {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    letter-spacing: 0.06em;
+    color: var(--white);
+    margin-bottom: 16px;
 }
-
-.text{
-    width: 60%;
+.legals-article h3 {
+    font-size: 0.85rem;
+    color: var(--grey-400);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+    font-weight: 500;
 }
+.legals-article p {
+    color: rgba(245,240,232,0.75);
+    font-size: 0.9rem;
+    line-height: 1.75;
+    margin-bottom: 8px;
+}
+.legals-article p:last-child { margin-bottom: 0; }
