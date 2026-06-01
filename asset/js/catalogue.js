@@ -1,73 +1,114 @@
-const container = document.querySelector('.fullcard');
-const checkboxes = document.querySelectorAll('.filtre input[type="checkbox"]');
-const range = document.querySelector('input[type="range"]');
+(async () => {
+    await fetchProduits();
 
-range.min = 0;
-range.max = 10;
-range.value = 10;
+    const container   = document.querySelector('.fullcard');
+    const paginDiv    = document.getElementById('pagination');
+    const countDiv    = document.getElementById('catalogue-count');
+    const range       = document.getElementById('price-range');
+    const priceDisplay= document.getElementById('price-display');
 
-function afficherProduits(liste) {
-    container.innerHTML = '';
+    const PER_PAGE = 9;
+    let currentPage = 1;
+    let filteredList = [...produits];
 
-    if (liste.length === 0) {
-        container.innerHTML = '<p style="color:white; margin-left:50px">Aucun produit trouvé</p>';
-        return;
+    // Prix max dynamique
+    const maxPrix = Math.ceil(Math.max(...produits.map(p => p.prix)));
+    range.max   = maxPrix;
+    range.value = maxPrix;
+    priceDisplay.textContent = maxPrix + ' €';
+
+    range.addEventListener('input', () => {
+        priceDisplay.textContent = range.value + ' €';
+        currentPage = 1;
+        appliquerFiltres();
+    });
+
+    // Filtres catégories
+    document.querySelectorAll('.filtre-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            btn.classList.toggle('active');
+            const cb = btn.querySelector('input[type="checkbox"]');
+            if (cb) cb.checked = !cb.checked;
+            currentPage = 1;
+            appliquerFiltres();
+        });
+    });
+
+    function appliquerFiltres() {
+        const cats = [...document.querySelectorAll('.filtre-btn.active')]
+            .map(b => b.dataset.categorie);
+        const prixMax = parseFloat(range.value);
+
+        filteredList = produits.filter(p => {
+            const catOk  = cats.length === 0 || cats.includes(p.categorie);
+            const prixOk = p.prix <= prixMax;
+            return catOk && prixOk;
+        });
+
+        afficherPage(currentPage);
     }
 
-    for (let i = 0; i < liste.length; i += 3) {
-        const row = document.createElement('div');
-        row.className = 'three_card';
+    function afficherPage(page) {
+        container.innerHTML = '';
+        const start = (page - 1) * PER_PAGE;
+        const slice = filteredList.slice(start, start + PER_PAGE);
 
-        liste.slice(i, i + 3).forEach(produit => {
-            const card = document.createElement('div');
+        countDiv.textContent = `${filteredList.length} produit${filteredList.length !== 1 ? 's' : ''}`;
+
+        if (slice.length === 0) {
+            container.innerHTML = '<p style="color:white;padding:24px">Aucun produit trouvé.</p>';
+            paginDiv.innerHTML = '';
+            return;
+        }
+
+        slice.forEach(produit => {
+            const card = document.createElement('article');
             card.className = 'card';
             card.style.cursor = 'pointer';
-            card.dataset.categorie = produit.categorie;
-            card.dataset.prix = produit.prix;
-
             card.innerHTML = `
-                <img src="${produit.image}" alt="${produit.titre}">
-                <div>
-                    <div class="card_text">
-                        <p>${produit.titre}</p>
-                        <p>${produit.prix.toFixed(2)}€</p>
+                <img src="../${produit.image}" alt="${produit.titre}">
+                <div class="card-body">
+                    <div class="card-title">${produit.titre}</div>
+                    <div class="card-row">
+                        <span class="card-price">${produit.prix.toFixed(2).replace('.',',')} €</span>
+                        <span class="card-tome">Tome ${produit.tome}</span>
                     </div>
-                    <div class="card_info">
-                        <p>Tome ${produit.tome}</p>
-                        <button class="ajouter">Ajouter</button>
+                    <div class="card-row" style="margin-top:10px">
+                        <button class="btn-add"
+                            data-titre="${produit.titre}"
+                            data-prix="${produit.prix.toFixed(2).replace('.',',')} €">
+                            + Ajouter
+                        </button>
                     </div>
                 </div>
             `;
-
-            card.addEventListener('click', (e) => {
-                if (e.target.classList.contains('ajouter')) return;
-                window.location.href = `produit.html?id=${produit.id}`;
+            card.addEventListener('click', e => {
+                if (e.target.closest('.btn-add')) return;
+                window.location.href = `produit.php?id=${produit.id}`;
             });
-
-            row.appendChild(card);
+            container.appendChild(card);
         });
 
-        container.appendChild(row);
+        renderPagination();
     }
-}
 
-function filtrer() {
-    const categoriesActives = [...checkboxes]
-        .filter(cb => cb.checked)
-        .map(cb => cb.dataset.categorie);
+    function renderPagination() {
+        const total = Math.ceil(filteredList.length / PER_PAGE);
+        paginDiv.innerHTML = '';
+        if (total <= 1) return;
 
-    const prixMax = parseFloat(range.value);
+        for (let i = 1; i <= total; i++) {
+            const btn = document.createElement('button');
+            btn.textContent = i;
+            btn.className = 'page-btn' + (i === currentPage ? ' active' : '');
+            btn.addEventListener('click', () => {
+                currentPage = i;
+                afficherPage(currentPage);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+            paginDiv.appendChild(btn);
+        }
+    }
 
-    const produitsFiltres = produits.filter(produit => {
-        const categorieOk = categoriesActives.length === 0 || categoriesActives.includes(produit.categorie);
-        const prixOk = produit.prix <= prixMax;
-        return categorieOk && prixOk;
-    });
-
-    afficherProduits(produitsFiltres);
-}
-
-afficherProduits(produits);
-
-checkboxes.forEach(cb => cb.addEventListener('change', filtrer));
-range.addEventListener('input', filtrer);
+    afficherPage(1);
+})();

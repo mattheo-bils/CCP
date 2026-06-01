@@ -3,7 +3,7 @@ $pageTitle = "Catalogue";
 $pageCss   = "catalogue.css";
 $pageJs    = ["catalogue.js", "search.js"];
 $basePath = '../';
-require_once 'header.php';
+require_once '../includes/header.php';
 ?>
 
 <main>
@@ -44,4 +44,4 @@ require_once 'header.php';
 </main>
 
 <?php $basePath = '../';
-require_once 'footer.php'; ?>
+require_once '../includes/footer.php'; ?>

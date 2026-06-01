@@ -3,7 +3,7 @@ $pageTitle = "Mon panier";
 $pageCss   = "pages.css";
 $pageJs    = ["panier.js"];
 $basePath = '../';
-require_once 'header.php';
+require_once '../includes/header.php';
 ?>
 
 <main>
@@ -40,4 +40,4 @@ require_once 'header.php';
 </main>
 
 <?php $basePath = '../';
-require_once 'footer.php'; ?>
+require_once '../includes/footer.php'; ?>

@@ -1,60 +1,50 @@
-(function(){
+(async () => {
     "use strict";
-    const slideTimeout = 5000;
-    const prev = document.querySelector('#prev');
-    const next = document.querySelector('#next');
-    const $slides = document.querySelectorAll('.slide');
-    let $dots;
-    let intervalId;
-    let currentSlide = 0;
+    await fetchProduits();
 
-    function slideTo(index){
+    // ── Carrousel catégories ──────────────────────────────────────────────
+    const slideTimeout = 5000;
+    const prev    = document.querySelector('#prev');
+    const next    = document.querySelector('#next');
+    const $slides = document.querySelectorAll('.slide');
+    let currentSlide = 0;
+    let intervalId;
+
+    function slideTo(index) {
         if (index >= $slides.length) index = 0;
         if (index < 0) index = $slides.length - 1;
         currentSlide = index;
-        $slides.forEach($elt => $elt.style.transform = `translateX(-${currentSlide * 100}%)`);
-        $dots.forEach(($elt, key) => $elt.className = `dot ${key === currentSlide ? 'active' : 'inactive'}`);
+        $slides.forEach($s => $s.style.transform = `translateX(-${currentSlide * 100}%)`);
     }
 
-    function showSlide(){
-        slideTo(currentSlide);
-        currentSlide++;
-    }
+    if (prev && next) {
+        prev.addEventListener('click', () => slideTo(--currentSlide));
+        next.addEventListener('click', () => slideTo(++currentSlide));
+        intervalId = setInterval(() => { currentSlide++; slideTo(currentSlide); }, slideTimeout);
 
-    for (let i = 0; i < $slides.length; i++){
-        let dotClass = i === currentSlide ? 'active' : 'inactive';
-        let $dot = `<span data-slideId="${i}" class="dot ${dotClass}"></span>`;
-        document.querySelector('.carousel_dots').innerHTML += $dot;
-    }
-
-    $dots = document.querySelectorAll('.dot');
-    $dots.forEach(($elt, key) => $elt.addEventListener('click', () => slideTo(key)));
-    prev.addEventListener('click', () => slideTo(--currentSlide));
-    next.addEventListener('click', () => slideTo(++currentSlide));
-    intervalId = setInterval(showSlide, slideTimeout);
-
-    $slides.forEach($elt => {
-        let startX, endX;
-        $elt.addEventListener('mouseover', () => clearInterval(intervalId));
-        $elt.addEventListener('mouseout', () => { intervalId = setInterval(showSlide, slideTimeout); });
-        $elt.addEventListener('touchstart', (event) => { startX = event.touches[0].clientX; });
-        $elt.addEventListener('touchend', (event) => {
-            endX = event.changedTouches[0].clientX;
-            if (startX > endX) slideTo(currentSlide + 1);
-            else if (startX < endX) slideTo(currentSlide - 1);
+        $slides.forEach($s => {
+            let startX, endX;
+            $s.addEventListener('mouseover', () => clearInterval(intervalId));
+            $s.addEventListener('mouseout',  () => { intervalId = setInterval(() => { currentSlide++; slideTo(currentSlide); }, slideTimeout); });
+            $s.addEventListener('touchstart', e => { startX = e.touches[0].clientX; });
+            $s.addEventListener('touchend',   e => {
+                endX = e.changedTouches[0].clientX;
+                if (startX > endX) slideTo(currentSlide + 1);
+                else if (startX < endX) slideTo(currentSlide - 1);
+            });
         });
-    });
-})()
-document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll('.tendance .card').forEach(card => {
+    }
+
+    // ── Cartes tendances cliquables ───────────────────────────────────────
+    document.querySelectorAll('#trending-cards .card').forEach(card => {
         card.style.cursor = 'pointer';
-        const titre = card.querySelector('.card_text p:first-child').textContent.trim().toLowerCase();
+        const titre   = card.querySelector('.card-title')?.textContent.trim().toLowerCase();
         const produit = produits.find(p => p.titre.toLowerCase() === titre);
         if (produit) {
-            card.addEventListener('click', (e) => {
-                if (e.target.classList.contains('ajouter')) return;
-                window.location.href = `produit.html?id=${produit.id}`;
+            card.addEventListener('click', e => {
+                if (e.target.closest('.btn-add')) return;
+                window.location.href = `views/produit.php?id=${produit.id}`;
             });
         }
     });
-});
+})();
