@@ -18,8 +18,7 @@
         };
 
         const getSlideWidth = () => {
-            const style = window.getComputedStyle(inner);
-            const gap   = parseFloat(style.gap) || 20;
+            const gap = parseFloat(window.getComputedStyle(inner).gap) || 20;
             return slides[0].getBoundingClientRect().width + gap;
         };
 
@@ -34,7 +33,6 @@
         if (prev) prev.addEventListener('click', () => slideTo(current - 1));
         if (next) next.addEventListener('click', () => slideTo(current + 1));
 
-        // Auto-play
         let timer = setInterval(() => {
             const max = slides.length - visibleCount();
             slideTo(current >= max ? 0 : current + 1);
@@ -48,7 +46,6 @@
             }, 4000);
         });
 
-        // Touch swipe
         let startX = 0;
         inner.addEventListener('touchstart', e => { startX = e.touches[0].clientX; });
         inner.addEventListener('touchend',   e => {
@@ -59,11 +56,5 @@
         window.addEventListener('resize', () => slideTo(current));
     }
 
-    // Attendre que le DOM + les styles soient appliqués
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initCarousel);
-    } else {
-        // Laisser le navigateur peindre avant de lire offsetWidth
-        requestAnimationFrame(() => requestAnimationFrame(initCarousel));
-    }
+    requestAnimationFrame(() => requestAnimationFrame(initCarousel));
 })();
