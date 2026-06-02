@@ -1,12 +1,7 @@
 <?php
-// $pageTitle  — défini par chaque page
-// $pageCss    — nom du fichier CSS de la page (optionnel)
-// $pageJs     — tableau de fichiers JS (optionnel)
-// $basePath   — '' depuis la racine, '../' depuis views/
-
 $basePath = $basePath ?? '';
 $title    = isset($pageTitle) ? "MangaMarket – $pageTitle" : "MangaMarket";
-$base     = $basePath; // alias court
+$base     = $basePath;
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -40,7 +35,7 @@ $base     = $basePath; // alias court
     <nav class="nav-desktop">
         <a href="<?= $base ?>views/catalogue.php">Catalogue</a>
         <a href="<?= $base ?>views/panier.php" class="cart-link">
-            <span class="material-symbols-outlined">shopping_cart</span>
+            🛒 Panier
             <span class="cart-badge" id="cart-count" style="display:none">0</span>
         </a>
         <a href="<?= $base ?>views/creecompte.php" class="btn-connect">Se connecter</a>
