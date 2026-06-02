@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS categories (
     PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
-INSERT INTO categories (slug, nom) VALUES
+INSERT IGNORE INTO categories (slug, nom) VALUES
     ('kodomo', 'Kodomo'),
     ('shonen', 'Shonen'),
     ('shojo',  'Shojo'),
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS produits (
         ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
-INSERT INTO produits (titre, auteur, tome, prix, categorie_id, image, description) VALUES
+INSERT IGNORE INTO produits (titre, auteur, tome, prix, categorie_id, image, description) VALUES
 ('Berserk',                'Kentaro Miura',      1,  7.20, 4, 'asset/img/berserk_tome_1_page_de_couverture.jpg',
  'Berserk, créé par Kentaro Miura, suit le destin tragique de Guts, un guerrier solitaire maniant une épée gigantesque dans un monde médiéval sombre et brutal. Marqué par une trahison atroce liée à Griffith, ancien chef de la Troupe du Faucon, il poursuit une quête de vengeance contre les forces démoniaques qui le traquent.'),
 
