@@ -40,11 +40,13 @@ try {
     }
 
     $sql = "
-        SELECT p.id, p.titre, p.tome, p.prix, p.image, c.slug AS categorie, c.nom AS categorie_nom
-        FROM produits p
-        JOIN categories c ON c.id = p.categorie_id
-        WHERE " . implode(' AND ', $where) . "
-        ORDER BY p.titre
+    SELECT MIN(p.id) AS id, p.titre, MIN(p.tome) AS tome, MIN(p.prix) AS prix, MIN(p.image) AS image,
+           c.slug AS categorie, c.nom AS categorie_nom
+    FROM produits p
+    JOIN categories c ON c.id = p.categorie_id
+    WHERE " . implode(' AND ', $where) . "
+    GROUP BY p.titre, c.slug, c.nom
+    ORDER BY p.titre
     ";
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);

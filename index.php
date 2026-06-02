@@ -70,12 +70,8 @@ try {
             </div>
         </div>
         <div class="carousel-controls">
-            <button class="carousel-btn" id="prev">
-                <span class="material-symbols-outlined">arrow_back</span>
-            </button>
-            <button class="carousel-btn" id="next">
-                <span class="material-symbols-outlined">arrow_forward</span>
-            </button>
+            <button class="carousel-btn" id="prev">&#8592;</button>
+            <button class="carousel-btn" id="next">&#8594;</button>
         </div>
     </section>
 
