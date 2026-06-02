@@ -30,11 +30,12 @@ try {
 
     // Suggestions : même catégorie, produit différent
     $stmt2 = $pdo->prepare("
-        SELECT p.id, p.titre, p.tome, p.prix, p.image
-        FROM produits p
-        WHERE p.categorie_id = ? AND p.id != ?
-        ORDER BY RAND()
-        LIMIT 4
+    SELECT MIN(p.id) AS id, p.titre, MIN(p.tome) AS tome, MIN(p.prix) AS prix, MIN(p.image) AS image
+    FROM produits p
+    WHERE p.categorie_id = ? AND p.id != ?
+    GROUP BY p.titre
+    ORDER BY RAND()
+    LIMIT 4
     ");
     $stmt2->execute([$produit['categorie_id'], $id]);
     $suggestions = $stmt2->fetchAll();
