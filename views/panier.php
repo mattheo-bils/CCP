@@ -11,7 +11,7 @@ require_once '../includes/header.php';
         <h1>Mon Panier</h1>
         <div id="panier-items">
             <div class="panier-empty" id="panier-empty" style="display:none">
-                <span class="material-symbols-outlined">shopping_cart</span>
+                <span style="font-size:4rem">🛒</span>
                 <p>Votre panier est vide.</p>
                 <a href="catalogue.php" class="btn btn-primary" style="margin-top:16px">
                     Voir le catalogue
