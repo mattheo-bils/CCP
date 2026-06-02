@@ -1,3 +1,6 @@
+<?php
+$base = $basePath ?? '';
+?>
 <footer>
     <div class="footer-inner">
         <div class="footer-brand">
@@ -9,20 +12,20 @@
         <div class="footer-links">
             <div class="footer-col">
                 <h4>Légal</h4>
-                <a href="<?= $basePath ?>legals.php">Mentions légales</a>
-                <a href="<?= $basePath ?>politique.php">Politique de confidentialité</a>
+                <a href="<?= $base ?>views/legals.php">Mentions légales</a>
+                <a href="#">Politique de confidentialité</a>
             </div>
             <div class="footer-col">
                 <h4>À propos</h4>
-                <a href="<?= $basePath ?>histoire.php">Qui sommes-nous</a>
-                <a href="<?= $basePath ?>faq.php">FAQ</a>
+                <a href="#">Qui sommes-nous</a>
+                <a href="#">FAQ</a>
             </div>
             <div class="footer-col">
                 <h4>Service client</h4>
-                <a href="<?= $basePath ?>contact.php">Nous contacter</a>
-                <a href="<?= $basePath ?>retour.php">Faire un retour</a>
-                <a href="<?= $basePath ?>suivi.php">Suivi de commande</a>
-                <a href="<?= $basePath ?>livraison.php">Livraison</a>
+                <a href="<?= $base ?>views/contact.php">Nous contacter</a>
+                <a href="#">Faire un retour</a>
+                <a href="#">Suivi de commande</a>
+                <a href="#">Livraison</a>
             </div>
         </div>
     </div>
@@ -31,11 +34,11 @@
     </div>
 </footer>
 <?php if (isset($pageJs)): ?>
-    <script src="<?= $basePath ?>asset/js/data.js"></script>
+    <script src="<?= $base ?>asset/js/data.js"></script>
     <?php foreach ((array)$pageJs as $js): ?>
-        <script src="<?= $basePath ?>asset/js/<?= htmlspecialchars($js) ?>"></script>
+        <script src="<?= $base ?>asset/js/<?= htmlspecialchars($js) ?>"></script>
     <?php endforeach; ?>
 <?php endif; ?>
-<script src="<?= $basePath ?>asset/js/header.js"></script>
+<script src="<?= $base ?>asset/js/header.js"></script>
 </body>
 </html>

@@ -1,91 +1,62 @@
-document.addEventListener("DOMContentLoaded", async () => {
-    await fetchProduits();
+document.addEventListener("DOMContentLoaded", () => {
+    // Le produit est déjà rendu côté PHP.
+    // Ce script gère uniquement les interactions côté client.
 
+    // Clic sur les miniatures → change l'image principale
+    document.querySelectorAll('.image-autre').forEach(thumb => {
+        thumb.addEventListener('click', () => {
+            const main = document.getElementById('main-img');
+            if (main) {
+                main.src = thumb.src;
+                document.querySelectorAll('.image-autre').forEach(t => t.classList.remove('active'));
+                thumb.classList.add('active');
+            }
+        });
+    });
+
+    // Si on arrive avec ?id= mais que la page est rendue statiquement (fallback),
+    // on tente de peupler depuis data.js (rétrocompatibilité).
     const params  = new URLSearchParams(window.location.search);
     const id      = parseInt(params.get("id"));
-    const produit = produits.find(p => p.id === id);
-
-    if (!produit) {
-        window.location.href = "catalogue.php";
-        return;
-    }
-
-    // Image principale
     const mainImg = document.getElementById('main-img');
-    if (mainImg) { mainImg.src = `../${produit.image}`; mainImg.alt = produit.titre; }
 
-    // Thumbnail
-    const thumb = document.querySelector('.thumbnails img');
-    if (thumb) { thumb.src = `../${produit.image}`; thumb.alt = produit.titre; }
+    if (!id || !mainImg || typeof produits === 'undefined') return;
 
-    // Fil d'Ariane
-    const breadcrumb = document.querySelector('.chemin span:last-child');
-    if (breadcrumb) breadcrumb.textContent = `${produit.titre} Tome ${produit.tome}`;
+    const produit = produits.find(p => p.id === id);
+    if (!produit) return;
 
-    // Titre
-    const h1 = document.querySelector('.description h1');
-    if (h1) h1.textContent = `${produit.titre} — Tome ${produit.tome}`;
+    // Mise à jour uniquement si le contenu est encore le placeholder statique
+    const titreEl = document.querySelector(".description h1");
+    if (titreEl && titreEl.textContent.trim() === 'Bleach — Tome 2' && produit.titre !== 'Bleach') {
+        document.title = `${produit.titre} — Tome ${produit.tome} | MangaMarket`;
+        titreEl.textContent = `${produit.titre} — Tome ${produit.tome}`;
 
-    // Prix
-    const prixVal = document.querySelector('.prix-valeur');
-    if (prixVal) prixVal.textContent = produit.prix.toFixed(2).replace('.', ',') + ' €';
+        const prixEl = document.querySelector(".prix-valeur");
+        if (prixEl) prixEl.textContent = produit.prix.toFixed(2).replace(".", ",") + " €";
 
-    // Meta table
-    const cells = document.querySelectorAll('.meta-table td:nth-child(2)');
-    const catLabel = produit.categorie.charAt(0).toUpperCase() + produit.categorie.slice(1);
-    if (cells[0]) cells[0].textContent = catLabel;
-    if (cells[1]) cells[1].textContent = produit.auteur || 'Non renseigné';
+        const inViews = window.location.pathname.includes('/views/');
+        const imgPath = inViews ? `../${produit.image}` : produit.image;
+        mainImg.src = imgPath;
+        mainImg.alt = produit.titre;
 
-    // Description
-    const descEl = document.querySelector('.description-text');
-    if (descEl) descEl.textContent = produit.description || 'Aucune description disponible.';
+        const rows = document.querySelectorAll(".meta-table tr");
+        if (rows[0]) rows[0].cells[1].textContent = produit.categorie.charAt(0).toUpperCase() + produit.categorie.slice(1);
+        if (rows[1]) rows[1].cells[1].textContent = produit.auteur || "Non renseigné";
 
-    // Titre onglet
-    document.title = `${produit.titre} — Tome ${produit.tome} | MangaMarket`;
+        const descEl = document.querySelector(".description-text");
+        if (descEl) descEl.textContent = produit.description || "";
 
-    // Bouton panier
-    const btnPanier = document.getElementById('btn-panier');
-    if (btnPanier) {
-        btnPanier.dataset.titre = produit.titre;
-        btnPanier.dataset.prix  = produit.prix.toFixed(2).replace('.', ',') + ' €';
-        btnPanier.classList.add('btn-add');
-    }
+        // Breadcrumb
+        const breadEl = document.querySelector(".chemin span:last-child");
+        if (breadEl) breadEl.textContent = `${produit.titre} — Tome ${produit.tome}`;
 
-    // Suggestions
-    const suggestions = produits
-        .filter(p => p.id !== produit.id)
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 3);
-
-    const grid = document.querySelector('.suggestion-grid');
-    if (grid) {
-        grid.innerHTML = '';
-        suggestions.forEach(s => {
-            const card = document.createElement('article');
-            card.className = 'card';
-            card.style.cursor = 'pointer';
-            card.innerHTML = `
-                <img src="../${s.image}" alt="${s.titre}">
-                <div class="card-body">
-                    <div class="card-title">${s.titre}</div>
-                    <div class="card-row">
-                        <span class="card-price">${s.prix.toFixed(2).replace('.', ',')} €</span>
-                        <span class="card-tome">Tome ${s.tome}</span>
-                    </div>
-                    <div class="card-row" style="margin-top:10px">
-                        <button class="btn-add"
-                            data-titre="${s.titre}"
-                            data-prix="${s.prix.toFixed(2).replace('.', ',')} €">
-                            + Ajouter
-                        </button>
-                    </div>
-                </div>
-            `;
-            card.addEventListener('click', e => {
-                if (e.target.closest('.btn-add')) return;
-                window.location.href = `produit.php?id=${s.id}`;
-            });
-            grid.appendChild(card);
-        });
+        // Bouton "Ajouter au panier" — patch les data-attributes
+        const btnPanier = document.querySelector('.btn-add, #btn-panier');
+        if (btnPanier) {
+            btnPanier.dataset.id    = produit.id;
+            btnPanier.dataset.titre = produit.titre;
+            btnPanier.dataset.prix  = produit.prix.toFixed(2).replace(".", ",");
+            btnPanier.dataset.img   = imgPath;
+        }
     }
 });
