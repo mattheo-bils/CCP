@@ -21,13 +21,13 @@ if (isset($_POST['action']) && $_POST['action'] === 'login') {
     if (empty($errorsLogin)) {
         try {
             require_once '../includes/db.php';
-            $stmt = $pdo->prepare("SELECT id, prenom, password FROM utilisateurs WHERE email = ? AND actif = 1");
+            $stmt = $pdo->prepare("SELECT id, prenom, password FROM utilisateurs WHERE email = ?");
             $stmt->execute([$email]);
             $user = $stmt->fetch();
 
             if ($user && password_verify($password, $user['password'])) {
-                $_SESSION['user_id']    = $user['id'];
-                $_SESSION['user_prenom']= $user['prenom'];
+                $_SESSION['user_id']     = $user['id'];
+                $_SESSION['user_prenom'] = $user['prenom'];
                 header('Location: ../index.php');
                 exit;
             } else {
@@ -55,7 +55,6 @@ if (isset($_POST['action']) && $_POST['action'] === 'register') {
     if (empty($errorsRegister)) {
         try {
             require_once '../includes/db.php';
-            // Vérifier doublon email
             $check = $pdo->prepare("SELECT id FROM utilisateurs WHERE email = ?");
             $check->execute([$email]);
             if ($check->fetch()) {
@@ -64,8 +63,8 @@ if (isset($_POST['action']) && $_POST['action'] === 'register') {
                 $hash = password_hash($password, PASSWORD_BCRYPT);
                 $stmt = $pdo->prepare("INSERT INTO utilisateurs (prenom, nom, email, password) VALUES (?,?,?,?)");
                 $stmt->execute([$prenom, $nom, $email, $hash]);
-                $_SESSION['user_id']    = $pdo->lastInsertId();
-                $_SESSION['user_prenom']= $prenom;
+                $_SESSION['user_id']     = $pdo->lastInsertId();
+                $_SESSION['user_prenom'] = $prenom;
                 header('Location: ../index.php');
                 exit;
             }
