@@ -7,7 +7,6 @@ if (burgerBtn && mobileNav) {
         burgerBtn.classList.toggle('active');
         mobileNav.classList.toggle('open');
     });
-    // Fermer en cliquant ailleurs
     document.addEventListener('click', e => {
         if (!e.target.closest('header')) {
             burgerBtn.classList.remove('active');
@@ -17,20 +16,41 @@ if (burgerBtn && mobileNav) {
 }
 
 // ── Badge panier ──────────────────────────────────────────
-function updateCartBadge() {
+async function updateCartBadge() {
     const badge = document.getElementById('cart-count');
     if (!badge) return;
+
+    const inViews = window.location.pathname.includes('/views/');
+    const apiBase = inViews ? '../api/panier.php' : 'api/panier.php';
+
     try {
-        const cart  = JSON.parse(localStorage.getItem('mm_cart') || '[]');
-        const count = cart.reduce((sum, item) => sum + (item.qty || 1), 0);
-        badge.textContent = count;
+        const res  = await fetch(apiBase + '?action=list');
+        const data = await res.json();
+
+        let count = 0;
+        if (data.connected && data.items) {
+            count = data.items.reduce((sum, i) => sum + (parseInt(i.quantite) || 1), 0);
+        } else {
+            const cart = JSON.parse(localStorage.getItem('mm_cart') || '[]');
+            count = cart.reduce((sum, i) => sum + (i.qty || 1), 0);
+        }
+
+        badge.textContent   = count;
         badge.style.display = count > 0 ? 'flex' : 'none';
-    } catch (e) {}
+    } catch(e) {
+        // Fallback localStorage
+        try {
+            const cart  = JSON.parse(localStorage.getItem('mm_cart') || '[]');
+            const count = cart.reduce((sum, i) => sum + (i.qty || 1), 0);
+            badge.textContent   = count;
+            badge.style.display = count > 0 ? 'flex' : 'none';
+        } catch(e2) {}
+    }
 }
 updateCartBadge();
 
 // ── Boutons "Ajouter au panier" ───────────────────────────
-document.addEventListener('click', e => {
+document.addEventListener('click', async e => {
     const btn = e.target.closest('.btn-add');
     if (!btn) return;
 
@@ -38,31 +58,55 @@ document.addEventListener('click', e => {
     e.stopPropagation();
 
     const id    = btn.dataset.id    || '0';
-    const titre = btn.dataset.titre || btn.closest('.card')?.querySelector('.card-title')?.textContent?.trim() || 'Manga';
-    const prix  = btn.dataset.prix  || btn.closest('.card')?.querySelector('.card-price')?.textContent?.replace('€','').trim() || '0';
+    const titre = btn.dataset.titre || '';
+    const prix  = btn.dataset.prix  || '0';
     const img   = btn.dataset.img   || '';
 
+    const inViews = window.location.pathname.includes('/views/');
+    const apiBase = inViews ? '../api/panier.php' : 'api/panier.php';
+
     try {
+        const res  = await fetch(apiBase + '?action=list');
+        const data = await res.json();
+
+        if (data.connected) {
+            // Utilisateur connecté → BDD
+            const form = new FormData();
+            form.append('action',     'add');
+            form.append('produit_id', id);
+            form.append('quantite',   '1');
+            await fetch(apiBase, { method: 'POST', body: form });
+        } else {
+            // Invité → localStorage
+            const cart = JSON.parse(localStorage.getItem('mm_cart') || '[]');
+            const idx  = cart.findIndex(i => i.id === id);
+            if (idx >= 0) {
+                cart[idx].qty = (cart[idx].qty || 1) + 1;
+            } else {
+                cart.push({ id, titre, prix, img, qty: 1 });
+            }
+            localStorage.setItem('mm_cart', JSON.stringify(cart));
+        }
+    } catch(e) {
+        // Fallback localStorage
         const cart = JSON.parse(localStorage.getItem('mm_cart') || '[]');
         const idx  = cart.findIndex(i => i.id === id);
-        if (idx >= 0) {
-            cart[idx].qty = (cart[idx].qty || 1) + 1;
-        } else {
-            cart.push({ id, titre, prix, img, qty: 1 });
-        }
+        if (idx >= 0) { cart[idx].qty = (cart[idx].qty || 1) + 1; }
+        else { cart.push({ id, titre, prix, img, qty: 1 }); }
         localStorage.setItem('mm_cart', JSON.stringify(cart));
-        updateCartBadge();
-    } catch (e) {}
+    }
+
+    updateCartBadge();
 
     // Feedback visuel
     const orig = btn.textContent;
-    btn.textContent  = '✓ Ajouté !';
-    btn.style.background = '#27AE60';
-    btn.disabled = true;
+    btn.textContent       = '✓ Ajouté !';
+    btn.style.background  = '#27AE60';
+    btn.disabled          = true;
     setTimeout(() => {
-        btn.textContent  = orig;
+        btn.textContent      = orig;
         btn.style.background = '';
-        btn.disabled = false;
+        btn.disabled         = false;
     }, 1500);
 });
 
@@ -86,8 +130,6 @@ style.textContent = `
     .search-result-prix  { margin-left: auto; font-weight: 700; font-size: 14px; color: #c44444; white-space: nowrap; }
     .search-no-result    { padding: 14px; text-align: center; color: #888; font-size: 14px; }
     .search-highlight    { background: #ffe082; border-radius: 2px; }
-
-    /* Alerte error/success globale */
     .alert-error {
         background: rgba(192,57,43,0.15);
         border: 1px solid var(--red);
@@ -105,7 +147,6 @@ style.textContent = `
         color: #2ECC71;
         font-size: 0.95rem;
     }
-    /* Card cliquable */
     .card-link { text-decoration: none; display: block; }
 `;
 document.head.appendChild(style);

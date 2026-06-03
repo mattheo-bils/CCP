@@ -172,3 +172,22 @@ CREATE TABLE IF NOT EXISTS messages_contact (
     created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 ) ENGINE=InnoDB;
+-- ────────────────────────────────────────────────────────────
+--  Panier (articles en attente de commande)
+-- ────────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS panier (
+    id             INT UNSIGNED      NOT NULL AUTO_INCREMENT,
+    utilisateur_id INT UNSIGNED      NOT NULL,
+    produit_id     SMALLINT UNSIGNED NOT NULL,
+    quantite       TINYINT UNSIGNED  NOT NULL DEFAULT 1,
+    created_at     TIMESTAMP         NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at     TIMESTAMP         NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_user_produit (utilisateur_id, produit_id),
+    CONSTRAINT fk_panier_utilisateur
+        FOREIGN KEY (utilisateur_id) REFERENCES utilisateurs(id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_panier_produit
+        FOREIGN KEY (produit_id) REFERENCES produits(id)
+        ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
