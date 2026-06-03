@@ -5,7 +5,7 @@
     if (!container) return;
 
     const inViews = window.location.pathname.includes('/views/');
-    const apiBase = inViews ? '../api/panier.php' : 'api/panier.php';
+    const apiBase = inViews ? '../api/panier_api.php' : 'api/panier.php';
 
     // ── Helpers localStorage (invités) ────────────────────
     function getCartLocal()      { try { return JSON.parse(localStorage.getItem('mm_cart') || '[]'); } catch(e) { return []; } }
