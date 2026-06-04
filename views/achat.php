@@ -1,17 +1,59 @@
 <?php
 $pageTitle = "Finaliser la commande";
 $pageCss   = "pages.css";
+$pageJs    = ["achat.js"];
 $basePath  = '../';
 
+if (session_status() === PHP_SESSION_NONE) session_start();
+
 $errors  = [];
-$success = false;
+$userId  = $_SESSION['user_id'] ?? null;
+
+$produitDirect   = null;
+$achatDirect     = isset($_GET['id']) || isset($_POST['produit_direct_id']);
+$produitDirectId = (int)($_GET['id'] ?? $_POST['produit_direct_id'] ?? 0);
+
+$recapItems = [];
+$recapTotal = 0;
+
+require_once '../includes/db.php';
+
+if ($achatDirect && $produitDirectId) {
+    $stmt = $pdo->prepare("SELECT id, titre, prix, image FROM produits WHERE id = ?");
+    $stmt->execute([$produitDirectId]);
+    $produitDirect = $stmt->fetch();
+    if ($produitDirect) {
+        $recapItems[] = [
+            'id'       => $produitDirect['id'],
+            'titre'    => $produitDirect['titre'],
+            'prix'     => $produitDirect['prix'],
+            'image'    => $produitDirect['image'],
+            'quantite' => 1,
+        ];
+        $recapTotal = $produitDirect['prix'];
+    }
+} elseif ($userId) {
+    $stmt = $pdo->prepare("
+        SELECT pa.produit_id AS id, p.titre, p.prix, p.image, pa.quantite
+        FROM panier pa
+        JOIN produits p ON p.id = pa.produit_id
+        WHERE pa.utilisateur_id = ?
+        ORDER BY pa.created_at
+    ");
+    $stmt->execute([$userId]);
+    $recapItems = $stmt->fetchAll();
+    foreach ($recapItems as $item) {
+        $recapTotal += $item['prix'] * $item['quantite'];
+    }
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $prenom  = trim($_POST['prenom']  ?? '');
-    $nom     = trim($_POST['nom']     ?? '');
-    $adresse = trim($_POST['adresse'] ?? '');
-    $ville   = trim($_POST['ville']   ?? '');
-    $cp      = trim($_POST['cp']      ?? '');
+    $prenom          = trim($_POST['prenom']  ?? '');
+    $nom             = trim($_POST['nom']     ?? '');
+    $adresse         = trim($_POST['adresse'] ?? '');
+    $ville           = trim($_POST['ville']   ?? '');
+    $cp              = trim($_POST['cp']      ?? '');
+    $produitDirectId = (int)($_POST['produit_direct_id'] ?? 0);
 
     if (empty($prenom))  $errors[] = "Prénom requis.";
     if (empty($nom))     $errors[] = "Nom requis.";
@@ -20,29 +62,69 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($cp))      $errors[] = "Code postal requis.";
 
     if (empty($errors)) {
-        if (session_status() === PHP_SESSION_NONE) session_start();
-        $panier = $_SESSION['panier'] ?? [];
+        try {
+            $pdo->beginTransaction();
 
-        if (!empty($panier)) {
-            try {
-                require_once '../includes/db.php';
-                $pdo->beginTransaction();
-                $total  = array_sum(array_map(fn($i) => $i['prix'] * $i['quantite'], $panier));
-                $userId = $_SESSION['user_id'] ?? null;
-                $stmt   = $pdo->prepare("INSERT INTO commandes (utilisateur_id,prenom,nom,adresse,code_postal,ville,total) VALUES (?,?,?,?,?,?,?)");
-                $stmt->execute([$userId,$prenom,$nom,$adresse,$cp,$ville,$total]);
+            if ($produitDirectId) {
+                $stmt = $pdo->prepare("SELECT prix FROM produits WHERE id = ?");
+                $stmt->execute([$produitDirectId]);
+                $prix  = (float)$stmt->fetchColumn();
+                $total = $prix;
+                $pdo->prepare("INSERT INTO commandes (utilisateur_id,prenom,nom,adresse,code_postal,ville,total) VALUES (?,?,?,?,?,?,?)")
+                    ->execute([$userId,$prenom,$nom,$adresse,$cp,$ville,$total]);
+                $commandeId = $pdo->lastInsertId();
+                $pdo->prepare("INSERT INTO commande_lignes (commande_id,produit_id,quantite,prix_unit) VALUES (?,?,1,?)")
+                    ->execute([$commandeId,$produitDirectId,$prix]);
+
+            } elseif ($userId) {
+                $stmt = $pdo->prepare("
+                    SELECT pa.produit_id, pa.quantite, p.prix
+                    FROM panier pa JOIN produits p ON p.id = pa.produit_id
+                    WHERE pa.utilisateur_id = ?
+                ");
+                $stmt->execute([$userId]);
+                $panierBdd = $stmt->fetchAll();
+                $total = array_sum(array_map(fn($i) => $i['prix'] * $i['quantite'], $panierBdd));
+                $pdo->prepare("INSERT INTO commandes (utilisateur_id,prenom,nom,adresse,code_postal,ville,total) VALUES (?,?,?,?,?,?,?)")
+                    ->execute([$userId,$prenom,$nom,$adresse,$cp,$ville,$total]);
                 $commandeId = $pdo->lastInsertId();
                 $stmtL = $pdo->prepare("INSERT INTO commande_lignes (commande_id,produit_id,quantite,prix_unit) VALUES (?,?,?,?)");
-                foreach ($panier as $item) $stmtL->execute([$commandeId,$item['id'],$item['quantite'],$item['prix']]);
-                $pdo->commit();
-                $_SESSION['panier'] = [];
-            } catch (Exception $e) {
-                if (isset($pdo)) $pdo->rollBack();
+                foreach ($panierBdd as $item) {
+                    $stmtL->execute([$commandeId,$item['produit_id'],$item['quantite'],$item['prix']]);
+                }
+                $pdo->prepare("DELETE FROM panier WHERE utilisateur_id = ?")->execute([$userId]);
+
+            } else {
+                $panierLocal = json_decode($_POST['panier_json'] ?? '[]', true) ?: [];
+                $total = 0;
+                foreach ($panierLocal as $item) {
+                    $total += (float)str_replace(',','.',$item['prix']) * ($item['qty'] ?? 1);
+                }
+                $pdo->prepare("INSERT INTO commandes (utilisateur_id,prenom,nom,adresse,code_postal,ville,total) VALUES (?,?,?,?,?,?,?)")
+                    ->execute([null,$prenom,$nom,$adresse,$cp,$ville,$total]);
+                $commandeId = $pdo->lastInsertId();
+                $stmtL = $pdo->prepare("INSERT INTO commande_lignes (commande_id,produit_id,quantite,prix_unit) VALUES (?,?,?,?)");
+                foreach ($panierLocal as $item) {
+                    $stmtL->execute([$commandeId,(int)$item['id'],(int)($item['qty']??1),(float)str_replace(',','.',$item['prix'])]);
+                }
             }
+
+            $pdo->commit();
+            header('Location: confirmeachat.php');
+            exit;
+
+        } catch (Exception $e) {
+            if (isset($pdo)) $pdo->rollBack();
+            $errors[] = "Une erreur est survenue. Veuillez réessayer.";
         }
-        header('Location: confirmeachat.php');
-        exit;
     }
+}
+
+$userInfo = [];
+if ($userId) {
+    $stmt = $pdo->prepare("SELECT prenom, nom FROM utilisateurs WHERE id = ?");
+    $stmt->execute([$userId]);
+    $userInfo = $stmt->fetch() ?: [];
 }
 
 require_once '../includes/header.php';
@@ -58,22 +140,26 @@ require_once '../includes/header.php';
     </div>
     <?php endif; ?>
 
-    <form method="post" action="achat.php">
+    <form method="post" action="achat.php" id="achat-form">
+        <?php if ($produitDirectId): ?>
+            <input type="hidden" name="produit_direct_id" value="<?= $produitDirectId ?>">
+        <?php else: ?>
+            <input type="hidden" name="panier_json" id="panier_json" value="">
+        <?php endif; ?>
 
-        <!-- Livraison -->
         <div class="achat-section">
             <h3>📦 Adresse de livraison</h3>
             <div class="form-row">
                 <div class="form-group">
                     <label for="prenom">Prénom</label>
                     <input type="text" id="prenom" name="prenom"
-                           value="<?= htmlspecialchars($_POST['prenom'] ?? '') ?>"
+                           value="<?= htmlspecialchars($_POST['prenom'] ?? $userInfo['prenom'] ?? '') ?>"
                            placeholder="Jean" required>
                 </div>
                 <div class="form-group">
                     <label for="nom">Nom</label>
                     <input type="text" id="nom" name="nom"
-                           value="<?= htmlspecialchars($_POST['nom'] ?? '') ?>"
+                           value="<?= htmlspecialchars($_POST['nom'] ?? $userInfo['nom'] ?? '') ?>"
                            placeholder="Dupont" required>
                 </div>
             </div>
@@ -99,44 +185,61 @@ require_once '../includes/header.php';
             </div>
         </div>
 
-        <!-- Paiement -->
         <div class="achat-section paiement">
             <h3>💳 Paiement sécurisé</h3>
             <div class="form-group">
                 <label for="carte">Numéro de carte</label>
                 <input type="text" id="carte" name="carte" class="card-number-input"
-                       placeholder="4242 4242 4242 4242" maxlength="19"
-                       autocomplete="cc-number"
-                       oninput="this.value=this.value.replace(/\D/g,'').replace(/(.{4})/g,'$1 ').trim()">
+                       placeholder="4242 4242 4242 4242" maxlength="19" autocomplete="cc-number">
             </div>
             <div class="form-row">
                 <div class="form-group">
                     <label for="expiry">Expiration</label>
-                    <input type="text" id="expiry" name="expiry"
-                           placeholder="MM / AA" maxlength="7"
-                           oninput="formatExpiry(this)">
+                    <input type="text" id="expiry" name="expiry" placeholder="MM / AA" maxlength="7">
                 </div>
                 <div class="form-group">
                     <label for="cvv">CVV</label>
-                    <input type="text" id="cvv" name="cvv"
-                           placeholder="•••" maxlength="4"
-                           oninput="this.value=this.value.replace(/\D/g,'')">
+                    <input type="text" id="cvv" name="cvv" placeholder="•••" maxlength="4">
                 </div>
             </div>
-            <div class="card-logos" style="display:flex;gap:8px;margin-top:4px;opacity:0.5;font-size:0.75rem;letter-spacing:0.08em;color:var(--grey-400)">
+            <div style="margin-top:8px;opacity:0.45;font-size:0.75rem;letter-spacing:0.08em;color:var(--grey-400)">
                 💳 VISA &nbsp;·&nbsp; MASTERCARD &nbsp;·&nbsp; CB
             </div>
         </div>
 
-        <!-- Récap -->
         <div class="achat-section">
             <h3>🛒 Récapitulatif</h3>
-            <div id="recap-items" style="color:var(--grey-400);font-size:0.9rem;min-height:40px">
-                Chargement du panier…
+            <div id="recap-items">
+                <?php if (!empty($recapItems)): ?>
+                    <?php foreach ($recapItems as $item): ?>
+                    <div style="display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05)">
+                        <img src="../<?= htmlspecialchars($item['image']) ?>"
+                             alt="<?= htmlspecialchars($item['titre']) ?>"
+                             style="width:46px;height:66px;object-fit:cover;border-radius:6px;flex-shrink:0">
+                        <span style="flex:1">
+                            <?= htmlspecialchars($item['titre']) ?>
+                            <span style="color:var(--grey-400)">× <?= (int)$item['quantite'] ?></span>
+                        </span>
+                        <span style="color:var(--gold-light);font-weight:700">
+                            <?= number_format($item['prix'] * $item['quantite'], 2, ',', '') ?> €
+                        </span>
+                    </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div id="recap-js-loading" style="color:var(--grey-400);font-size:0.9rem">
+                        Chargement du panier…
+                    </div>
+                <?php endif; ?>
             </div>
             <div class="panier-total" style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.08)">
                 <span style="font-size:1rem">Total</span>
-                <span id="recap-total" style="color:var(--gold-light)">—</span>
+                <span id="recap-total" style="color:var(--gold-light)">
+                    <?php if (!empty($recapItems)): ?>
+                        <?= number_format($recapTotal, 2, ',', '') ?> €
+                    <?php else: ?>
+                        —
+                    <?php endif; ?>
+                </span>
             </div>
         </div>
 
@@ -147,38 +250,5 @@ require_once '../includes/header.php';
     </form>
 </div>
 </main>
-
-<script>
-function formatExpiry(input) {
-    let v = input.value.replace(/\D/g,'');
-    if (v.length >= 2) v = v.slice(0,2) + ' / ' + v.slice(2,4);
-    input.value = v;
-}
-
-(function() {
-    const items = document.getElementById('recap-items');
-    const totEl = document.getElementById('recap-total');
-    let cart = [];
-    try { cart = JSON.parse(localStorage.getItem('mm_cart') || '[]'); } catch(e){}
-
-    if (!cart.length) {
-        items.textContent = 'Votre panier est vide.';
-        totEl.textContent = '0,00 €';
-        return;
-    }
-
-    let html = '', total = 0;
-    cart.forEach(item => {
-        const p = parseFloat(String(item.prix).replace(',','.')) || 0;
-        total += p * (item.qty || 1);
-        html += `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05)">
-            <span>${item.titre} <span style="color:var(--grey-400)">× ${item.qty||1}</span></span>
-            <span style="color:var(--gold-light);font-weight:700">${(p*(item.qty||1)).toFixed(2).replace('.',',')} €</span>
-        </div>`;
-    });
-    items.innerHTML = html;
-    totEl.textContent = total.toFixed(2).replace('.',',') + ' €';
-})();
-</script>
 
 <?php require_once '../includes/footer.php'; ?>

@@ -1,15 +1,15 @@
 <?php
 $pageTitle = "Connexion / Inscription";
 $pageCss   = "pages.css";
+$pageJs    = ["creecompte.js"];
 $basePath  = '../';
 
 $errorsLogin    = [];
 $errorsRegister = [];
 $activeTab      = 'login';
 
-session_start();
+if (session_status() === PHP_SESSION_NONE) session_start();
 
-// ── CONNEXION ──────────────────────────────────────────────
 if (isset($_POST['action']) && $_POST['action'] === 'login') {
     $activeTab = 'login';
     $email    = trim($_POST['email']    ?? '');
@@ -24,7 +24,6 @@ if (isset($_POST['action']) && $_POST['action'] === 'login') {
             $stmt = $pdo->prepare("SELECT id, prenom, password FROM utilisateurs WHERE email = ?");
             $stmt->execute([$email]);
             $user = $stmt->fetch();
-
             if ($user && password_verify($password, $user['password'])) {
                 $_SESSION['user_id']     = $user['id'];
                 $_SESSION['user_prenom'] = $user['prenom'];
@@ -39,7 +38,6 @@ if (isset($_POST['action']) && $_POST['action'] === 'login') {
     }
 }
 
-// ── INSCRIPTION ────────────────────────────────────────────
 if (isset($_POST['action']) && $_POST['action'] === 'register') {
     $activeTab = 'register';
     $prenom   = trim($_POST['prenom']   ?? '');
@@ -90,7 +88,6 @@ require_once '../includes/header.php';
                         id="tab-register" onclick="switchTab('register')">Créer un compte</button>
             </div>
 
-            <!-- CONNEXION -->
             <div id="form-login" <?= $activeTab !== 'login' ? 'style="display:none"' : '' ?>>
                 <?php if (!empty($errorsLogin)): ?>
                 <div class="alert-error" style="margin-bottom:16px">
@@ -117,7 +114,6 @@ require_once '../includes/header.php';
                 <a href="#" class="compte-link">Mot de passe oublié ?</a>
             </div>
 
-            <!-- INSCRIPTION -->
             <div id="form-register" <?= $activeTab !== 'register' ? 'style="display:none"' : '' ?>>
                 <?php if (!empty($errorsRegister)): ?>
                 <div class="alert-error" style="margin-bottom:16px">
@@ -157,18 +153,8 @@ require_once '../includes/header.php';
                     Déjà inscrit ? <span>Se connecter</span>
                 </a>
             </div>
-
         </div>
     </div>
 </main>
-
-<script>
-function switchTab(tab) {
-    document.getElementById('form-login').style.display    = tab === 'login'    ? '' : 'none';
-    document.getElementById('form-register').style.display = tab === 'register' ? '' : 'none';
-    document.getElementById('tab-login').classList.toggle('active',    tab === 'login');
-    document.getElementById('tab-register').classList.toggle('active', tab === 'register');
-}
-</script>
 
 <?php require_once '../includes/footer.php'; ?>

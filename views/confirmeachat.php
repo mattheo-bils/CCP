@@ -1,6 +1,7 @@
 <?php
 $pageTitle = "Commande confirmée";
 $pageCss   = "confirmeachat.css";
+$pageJs    = ["confirmeachat.js"];
 $basePath  = '../';
 require_once '../includes/header.php';
 ?>
@@ -11,10 +12,5 @@ require_once '../includes/header.php';
     <p>Vous recevrez un email de confirmation dans quelques instants.</p>
     <a href="../index.php" class="btn btn-primary">Revenir à l'accueil</a>
 </main>
-
-<script>
-// Vider le panier après confirmation
-localStorage.removeItem('mm_cart');
-</script>
 
 <?php require_once '../includes/footer.php'; ?>
