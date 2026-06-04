@@ -1,24 +1,37 @@
 <?php
+/**
+ * index.php — Page d'accueil de MangaMarket
+ *
+ * Affiche :
+ *   - Un hero avec un manga mis en avant
+ *   - Un carrousel de catégories
+ *   - Une grille de mangas tendance (depuis la BDD ou fallback statique)
+ */
+
 $pageTitle = "Accueil";
 $pageCss   = "index.css";
-$pageJs    = ["index.js", "search.js"];
+$pageJs    = ["index.js", "search.js"]; // Carrousel + recherche
 $basePath  = '';
+
 require_once 'includes/header.php';
 
-// Tendances depuis la BDD (fallback tableau statique si pas de connexion)
+// ── Chargement des tendances depuis la BDD ────────────────
 $tendances = [];
 try {
     require_once 'includes/db.php';
+    // Sélection aléatoire de 5 produits avec dédoublonnage par titre
     $stmt = $pdo->query("
-        SELECT p.id, p.titre, p.tome, p.prix, p.image, c.slug AS categorie
+        SELECT MIN(p.id) AS id, p.titre, MIN(p.tome) AS tome,
+               MIN(p.prix) AS prix, MIN(p.image) AS image, c.slug AS categorie
         FROM produits p
         JOIN categories c ON c.id = p.categorie_id
+        GROUP BY p.titre, c.slug
         ORDER BY RAND()
         LIMIT 5
     ");
     $tendances = $stmt->fetchAll();
 } catch (Exception $e) {
-    // Fallback statique si BDD non disponible
+    // Fallback statique si la BDD n'est pas disponible
     $tendances = [
         ['id'=>1,  'titre'=>'Berserk',       'tome'=>1,  'prix'=>7.20, 'image'=>'asset/img/berserk_tome_1_page_de_couverture.jpg',        'categorie'=>'seinen'],
         ['id'=>2,  'titre'=>'Dragon Ball',   'tome'=>35, 'prix'=>7.20, 'image'=>'asset/img/dragonball_tome_35_page_de_couverture.jpg',     'categorie'=>'shonen'],
@@ -30,7 +43,7 @@ try {
 ?>
 
 <main>
-    <!-- Hero -->
+    <!-- ── Section Hero ──────────────────────────────────── -->
     <section class="hero noise">
         <div class="hero-content">
             <span class="hero-tag">Nouveauté Shonen</span>
@@ -40,18 +53,21 @@ try {
                 <a href="views/catalogue.php" class="btn btn-outline">Voir la collection</a>
             </div>
         </div>
+        <!-- Indicateur de défilement -->
         <div class="hero-scroll">
             <span class="material-symbols-outlined" style="font-size:18px">expand_more</span>
             scroll
         </div>
     </section>
 
-    <!-- Catégories -->
+    <!-- ── Section Catégories (carrousel) ────────────────── -->
     <section class="categories-section">
         <h2 class="section-heading">Catégories</h2>
         <div class="carousel-wrapper">
+            <!-- Piste du carrousel, animée par index.js -->
             <div class="carousel-inner" id="carousel-inner">
                 <?php
+                // Liste des catégories avec leur slug et nom affiché
                 $cats = [
                     'kodomo' => 'Kodomo',
                     'shonen' => 'Shonen',
@@ -60,6 +76,7 @@ try {
                     'josei'  => 'Josei',
                 ];
                 foreach ($cats as $slug => $nom): ?>
+                <!-- Slide cliquable → filtre le catalogue par catégorie -->
                 <a href="views/catalogue.php?categorie=<?= $slug ?>" id="<?= $slug ?>" class="slide">
                     <div class="slide-bg"></div>
                     <div class="slide-label">
@@ -69,17 +86,23 @@ try {
                 <?php endforeach; ?>
             </div>
         </div>
+        <!-- Boutons de navigation du carrousel -->
         <div class="carousel-controls">
-            <button class="carousel-btn" id="prev">&#8592;</button>
-            <button class="carousel-btn" id="next">&#8594;</button>
+            <button class="carousel-btn" id="prev">
+                <span class="material-symbols-outlined">arrow_back</span>
+            </button>
+            <button class="carousel-btn" id="next">
+                <span class="material-symbols-outlined">arrow_forward</span>
+            </button>
         </div>
     </section>
 
-    <!-- Tendances -->
+    <!-- ── Section Tendances ─────────────────────────────── -->
     <section class="trending-section">
         <h2 class="section-heading">Tendances</h2>
         <div class="cards-grid">
             <?php foreach ($tendances as $m): ?>
+            <!-- Carte produit cliquable vers la fiche produit -->
             <a href="views/produit.php?id=<?= (int)$m['id'] ?>" class="card card-link">
                 <img src="<?= htmlspecialchars($m['image']) ?>"
                      alt="<?= htmlspecialchars($m['titre']) ?> Tome <?= (int)$m['tome'] ?>">
@@ -90,6 +113,7 @@ try {
                         <span class="card-tome">Tome <?= (int)$m['tome'] ?></span>
                     </div>
                     <div class="card-row" style="margin-top:10px">
+                        <!-- Bouton géré par header.js (ajout au panier via localStorage ou BDD) -->
                         <button class="btn-add"
                                 data-id="<?= (int)$m['id'] ?>"
                                 data-titre="<?= htmlspecialchars($m['titre']) ?>"

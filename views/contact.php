@@ -1,4 +1,13 @@
 <?php
+/**
+ * contact.php — Formulaire de contact
+ *
+ * Traitement POST :
+ *   - Validation des champs (nom, prénom, téléphone, email, message)
+ *   - Insertion en BDD dans la table messages_contact
+ *   - Fallback : succès même si la BDD est indisponible (mode dev)
+ */
+
 $pageTitle = "Contact";
 $pageCss   = "contact.css";
 $basePath  = '../';
@@ -6,22 +15,26 @@ $basePath  = '../';
 $success = false;
 $errors  = [];
 
+// ── Traitement du formulaire ──────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Récupération et nettoyage des données
     $nom     = trim($_POST['nom']     ?? '');
     $prenom  = trim($_POST['prenom']  ?? '');
     $tel     = trim($_POST['tel']     ?? '');
     $mail    = trim($_POST['mail']    ?? '');
     $message = trim($_POST['message'] ?? '');
 
-    if (empty($nom))                                    $errors[] = "Le nom est requis.";
-    if (empty($prenom))                                 $errors[] = "Le prénom est requis.";
-    if (empty($tel))                                    $errors[] = "Le téléphone est requis.";
-    if (!filter_var($mail, FILTER_VALIDATE_EMAIL))      $errors[] = "L'adresse email est invalide.";
-    if (empty($message))                                $errors[] = "Le message est requis.";
+    // Validation des champs
+    if (empty($nom))                                   $errors[] = "Le nom est requis.";
+    if (empty($prenom))                                $errors[] = "Le prénom est requis.";
+    if (empty($tel))                                   $errors[] = "Le téléphone est requis.";
+    if (!filter_var($mail, FILTER_VALIDATE_EMAIL))     $errors[] = "L'adresse email est invalide.";
+    if (empty($message))                               $errors[] = "Le message est requis.";
 
     if (empty($errors)) {
         try {
             require_once '../includes/db.php';
+            // Insertion du message en BDD
             $stmt = $pdo->prepare("
                 INSERT INTO messages_contact (nom, prenom, telephone, email, message)
                 VALUES (?, ?, ?, ?, ?)
@@ -43,12 +56,14 @@ require_once '../includes/header.php';
         <h1>Nous contacter</h1>
         <p class="sub">Une question ? Remplissez le formulaire, nous vous répondrons sous 48h.</p>
 
+        <!-- Message de succès après envoi -->
         <?php if ($success): ?>
         <div class="alert-success">
             ✓ Votre message a bien été envoyé. Merci !
         </div>
         <?php endif; ?>
 
+        <!-- Affichage des erreurs de validation -->
         <?php if (!empty($errors)): ?>
         <div class="alert-error">
             <?php foreach ($errors as $e): ?>
@@ -57,6 +72,7 @@ require_once '../includes/header.php';
         </div>
         <?php endif; ?>
 
+        <!-- Formulaire de contact -->
         <form method="post" action="contact.php" novalidate>
             <div class="form-row">
                 <div class="form-group">
