@@ -187,7 +187,101 @@ header {
     background: var(--red);
     color: var(--white);
 }
+/* =========================================================
+   RÉSULTATS DE RECHERCHE — à ajouter dans header.css
+   ========================================================= */
 
+/* Position relative sur la search-bar pour le dropdown absolu */
+.search-bar {
+    position: relative;
+}
+
+/* Dropdown résultats */
+#search-results {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    width: 100%;
+    background: #ffffff !important;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    overflow: hidden;
+    z-index: 9999;
+}
+#search-results.visible {
+    display: block;
+}
+
+/* Item individuel */
+.search-result-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 10px 14px !important;
+    text-decoration: none !important;
+    background: #ffffff !important;
+    color: #131937 !important;
+    transition: background 0.15s;
+    cursor: pointer;
+}
+.search-result-item:hover,
+.search-result-item[aria-selected="true"] {
+    background: #eef2ff !important;
+    color: #131937 !important;
+}
+
+/* Image miniature */
+.search-result-item img {
+    width: 36px;
+    height: 52px;
+    object-fit: cover;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+/* Infos texte */
+.search-result-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+.search-result-titre {
+    font-weight: 600;
+    font-size: 14px;
+    color: #131937 !important;
+}
+.search-result-meta {
+    font-size: 12px;
+    color: #666666 !important;
+    margin-top: 2px;
+}
+
+/* Prix */
+.search-result-prix {
+    margin-left: auto;
+    font-weight: 700;
+    font-size: 14px;
+    color: #c44444 !important;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* Aucun résultat */
+.search-no-result {
+    padding: 16px;
+    text-align: center;
+    color: #888;
+    font-size: 14px;
+    background: #fff;
+}
+
+/* Surlignage du terme recherché */
+.search-highlight {
+    background: #ffe082;
+    border-radius: 2px;
+    color: #131937;
+}
 @media (max-width: 768px) {
     header { padding: 0 16px; gap: 12px; }
     .nav-desktop { display: none; }
