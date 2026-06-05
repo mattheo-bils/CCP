@@ -71,7 +71,7 @@ try {
 // Définition des métadonnées de la page
 $pageTitle = htmlspecialchars($produit['titre']) . ' — Tome ' . (int)$produit['tome'];
 $pageCss   = "produit.css";
-$pageJs    = ["produit.js", "search.js"];
+$pageJs    = ["produit.js"];
 
 require_once '../includes/header.php';
 ?>

@@ -10,7 +10,7 @@
 
 $pageTitle = "Accueil";
 $pageCss   = "index.css";
-$pageJs    = ["index.js", "search.js"]; // Carrousel + recherche
+$pageJs    = ["index.js"]; // Carrousel + recherche
 $basePath  = '';
 
 require_once 'includes/header.php';
