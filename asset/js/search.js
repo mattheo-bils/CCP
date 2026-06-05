@@ -18,6 +18,12 @@ document.addEventListener('DOMContentLoaded', () => {
         return texte.replace(re, '<mark class="search-highlight">$1</mark>');
     }
 
+    // Ferme et vide la liste
+    function fermer() {
+        resultsBox.classList.remove('visible');
+        resultsBox.innerHTML = '';
+    }
+
     // Affichage des résultats
     function afficherResultats(produits, query) {
         resultsBox.innerHTML = '';
@@ -57,16 +63,15 @@ document.addEventListener('DOMContentLoaded', () => {
         resultsBox.classList.add('visible');
     }
 
-    // Appel API avec debounce
+    // Appel API avec debounce — ne se lance QUE si query non vide
     function rechercher(q) {
-        // Ne rien faire si la recherche est vide
+        clearTimeout(debounceTimer);
+
         if (!q.trim()) {
-            resultsBox.classList.remove('visible');
-            resultsBox.innerHTML = '';
+            fermer();
             return;
         }
 
-        clearTimeout(debounceTimer);
         debounceTimer = setTimeout(async () => {
             try {
                 const res  = await fetch(`${apiBase}?q=${encodeURIComponent(q)}`);
@@ -78,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 200);
     }
 
-    // Déclenche uniquement sur frappe, pas au focus
+    // Déclenche uniquement sur frappe (pas au focus)
     input.addEventListener('input', e => rechercher(e.target.value));
 
     // Navigation clavier
@@ -99,16 +104,13 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             window.location.href = current.href;
         } else if (e.key === 'Escape') {
-            resultsBox.classList.remove('visible');
+            fermer();
             input.blur();
         }
     });
 
     // Ferme en cliquant en dehors
     document.addEventListener('click', e => {
-        if (!e.target.closest('.search-bar')) {
-            resultsBox.classList.remove('visible');
-            resultsBox.innerHTML = '';
-        }
+        if (!e.target.closest('.search-bar')) fermer();
     });
 });
