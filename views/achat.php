@@ -1,4 +1,9 @@
 <?php
+/**
+ * achat.php — Finalisation de commande
+ * Vérifie le stock avant d'enregistrer et décrémente après confirmation.
+ */
+
 $pageTitle = "Finaliser la commande";
 $pageCss   = "pages.css";
 $pageJs    = ["achat.js"];
@@ -18,11 +23,16 @@ $recapTotal = 0;
 
 require_once '../includes/db.php';
 
+// ── Vérification stock pour achat direct ─────────────────
 if ($achatDirect && $produitDirectId) {
-    $stmt = $pdo->prepare("SELECT id, titre, prix, image FROM produits WHERE id = ?");
+    $stmt = $pdo->prepare("SELECT id, titre, prix, image, stock FROM produits WHERE id = ?");
     $stmt->execute([$produitDirectId]);
     $produitDirect = $stmt->fetch();
     if ($produitDirect) {
+        if ($produitDirect['stock'] <= 0) {
+            header('Location: produit.php?id=' . $produitDirectId . '&rupture=1');
+            exit;
+        }
         $recapItems[] = [
             'id'       => $produitDirect['id'],
             'titre'    => $produitDirect['titre'],
@@ -34,7 +44,7 @@ if ($achatDirect && $produitDirectId) {
     }
 } elseif ($userId) {
     $stmt = $pdo->prepare("
-        SELECT pa.produit_id AS id, p.titre, p.prix, p.image, pa.quantite
+        SELECT pa.produit_id AS id, p.titre, p.prix, p.image, pa.quantite, p.stock
         FROM panier pa
         JOIN produits p ON p.id = pa.produit_id
         WHERE pa.utilisateur_id = ?
@@ -47,6 +57,7 @@ if ($achatDirect && $produitDirectId) {
     }
 }
 
+// ── Traitement du formulaire ──────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $prenom          = trim($_POST['prenom']  ?? '');
     $nom             = trim($_POST['nom']     ?? '');
@@ -66,60 +77,112 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pdo->beginTransaction();
 
             if ($produitDirectId) {
-                $stmt = $pdo->prepare("SELECT prix FROM produits WHERE id = ?");
+                // ── Achat direct ──────────────────────────
+                $stmt = $pdo->prepare("SELECT prix, stock FROM produits WHERE id = ? FOR UPDATE");
                 $stmt->execute([$produitDirectId]);
-                $prix  = (float)$stmt->fetchColumn();
-                $total = $prix;
-                $pdo->prepare("INSERT INTO commandes (utilisateur_id,prenom,nom,adresse,code_postal,ville,total) VALUES (?,?,?,?,?,?,?)")
-                    ->execute([$userId,$prenom,$nom,$adresse,$cp,$ville,$total]);
-                $commandeId = $pdo->lastInsertId();
-                $pdo->prepare("INSERT INTO commande_lignes (commande_id,produit_id,quantite,prix_unit) VALUES (?,?,1,?)")
-                    ->execute([$commandeId,$produitDirectId,$prix]);
+                $prod = $stmt->fetch();
+
+                if (!$prod || $prod['stock'] <= 0) {
+                    $pdo->rollBack();
+                    $errors[] = "Ce produit est en rupture de stock.";
+                } else {
+                    $total = (float)$prod['prix'];
+                    $pdo->prepare("INSERT INTO commandes (utilisateur_id,prenom,nom,adresse,code_postal,ville,total) VALUES (?,?,?,?,?,?,?)")
+                        ->execute([$userId,$prenom,$nom,$adresse,$cp,$ville,$total]);
+                    $commandeId = $pdo->lastInsertId();
+                    $pdo->prepare("INSERT INTO commande_lignes (commande_id,produit_id,quantite,prix_unit) VALUES (?,?,1,?)")
+                        ->execute([$commandeId,$produitDirectId,$prod['prix']]);
+                    // Décrémente le stock
+                    $pdo->prepare("UPDATE produits SET stock = stock - 1 WHERE id = ?")
+                        ->execute([$produitDirectId]);
+                    $pdo->commit();
+                    header('Location: confirmeachat.php');
+                    exit;
+                }
 
             } elseif ($userId) {
+                // ── Panier BDD ────────────────────────────
                 $stmt = $pdo->prepare("
-                    SELECT pa.produit_id, pa.quantite, p.prix
+                    SELECT pa.produit_id, pa.quantite, p.prix, p.stock, p.titre
                     FROM panier pa JOIN produits p ON p.id = pa.produit_id
                     WHERE pa.utilisateur_id = ?
+                    FOR UPDATE
                 ");
                 $stmt->execute([$userId]);
                 $panierBdd = $stmt->fetchAll();
-                $total = array_sum(array_map(fn($i) => $i['prix'] * $i['quantite'], $panierBdd));
-                $pdo->prepare("INSERT INTO commandes (utilisateur_id,prenom,nom,adresse,code_postal,ville,total) VALUES (?,?,?,?,?,?,?)")
-                    ->execute([$userId,$prenom,$nom,$adresse,$cp,$ville,$total]);
-                $commandeId = $pdo->lastInsertId();
-                $stmtL = $pdo->prepare("INSERT INTO commande_lignes (commande_id,produit_id,quantite,prix_unit) VALUES (?,?,?,?)");
+
+                // Vérifier le stock de chaque article
                 foreach ($panierBdd as $item) {
-                    $stmtL->execute([$commandeId,$item['produit_id'],$item['quantite'],$item['prix']]);
+                    if ($item['stock'] < $item['quantite']) {
+                        $errors[] = "\"" . $item['titre'] . "\" : stock insuffisant (disponible : " . $item['stock'] . ").";
+                    }
                 }
-                $pdo->prepare("DELETE FROM panier WHERE utilisateur_id = ?")->execute([$userId]);
+
+                if (empty($errors)) {
+                    $total = array_sum(array_map(fn($i) => $i['prix'] * $i['quantite'], $panierBdd));
+                    $pdo->prepare("INSERT INTO commandes (utilisateur_id,prenom,nom,adresse,code_postal,ville,total) VALUES (?,?,?,?,?,?,?)")
+                        ->execute([$userId,$prenom,$nom,$adresse,$cp,$ville,$total]);
+                    $commandeId = $pdo->lastInsertId();
+                    $stmtL = $pdo->prepare("INSERT INTO commande_lignes (commande_id,produit_id,quantite,prix_unit) VALUES (?,?,?,?)");
+                    foreach ($panierBdd as $item) {
+                        $stmtL->execute([$commandeId,$item['produit_id'],$item['quantite'],$item['prix']]);
+                        // Décrémente le stock
+                        $pdo->prepare("UPDATE produits SET stock = stock - ? WHERE id = ?")
+                            ->execute([$item['quantite'],$item['produit_id']]);
+                    }
+                    $pdo->prepare("DELETE FROM panier WHERE utilisateur_id = ?")->execute([$userId]);
+                    $pdo->commit();
+                    header('Location: confirmeachat.php');
+                    exit;
+                } else {
+                    $pdo->rollBack();
+                }
 
             } else {
+                // ── Invité localStorage ───────────────────
                 $panierLocal = json_decode($_POST['panier_json'] ?? '[]', true) ?: [];
-                $total = 0;
+
+                // Vérifier le stock de chaque article
                 foreach ($panierLocal as $item) {
-                    $total += (float)str_replace(',','.',$item['prix']) * ($item['qty'] ?? 1);
+                    $s = $pdo->prepare("SELECT stock, titre FROM produits WHERE id = ?");
+                    $s->execute([(int)$item['id']]);
+                    $prod = $s->fetch();
+                    if ($prod && $prod['stock'] < ($item['qty'] ?? 1)) {
+                        $errors[] = "\"" . $prod['titre'] . "\" : stock insuffisant (disponible : " . $prod['stock'] . ").";
+                    }
                 }
-                $pdo->prepare("INSERT INTO commandes (utilisateur_id,prenom,nom,adresse,code_postal,ville,total) VALUES (?,?,?,?,?,?,?)")
-                    ->execute([null,$prenom,$nom,$adresse,$cp,$ville,$total]);
-                $commandeId = $pdo->lastInsertId();
-                $stmtL = $pdo->prepare("INSERT INTO commande_lignes (commande_id,produit_id,quantite,prix_unit) VALUES (?,?,?,?)");
-                foreach ($panierLocal as $item) {
-                    $stmtL->execute([$commandeId,(int)$item['id'],(int)($item['qty']??1),(float)str_replace(',','.',$item['prix'])]);
+
+                if (empty($errors)) {
+                    $total = 0;
+                    foreach ($panierLocal as $item) {
+                        $total += (float)str_replace(',','.',$item['prix']) * ($item['qty'] ?? 1);
+                    }
+                    $pdo->prepare("INSERT INTO commandes (utilisateur_id,prenom,nom,adresse,code_postal,ville,total) VALUES (?,?,?,?,?,?,?)")
+                        ->execute([null,$prenom,$nom,$adresse,$cp,$ville,$total]);
+                    $commandeId = $pdo->lastInsertId();
+                    $stmtL = $pdo->prepare("INSERT INTO commande_lignes (commande_id,produit_id,quantite,prix_unit) VALUES (?,?,?,?)");
+                    foreach ($panierLocal as $item) {
+                        $qty = (int)($item['qty'] ?? 1);
+                        $stmtL->execute([$commandeId,(int)$item['id'],$qty,(float)str_replace(',','.',$item['prix'])]);
+                        $pdo->prepare("UPDATE produits SET stock = stock - ? WHERE id = ?")
+                            ->execute([$qty,(int)$item['id']]);
+                    }
+                    $pdo->commit();
+                    header('Location: confirmeachat.php');
+                    exit;
+                } else {
+                    $pdo->rollBack();
                 }
             }
 
-            $pdo->commit();
-            header('Location: confirmeachat.php');
-            exit;
-
         } catch (Exception $e) {
-            if (isset($pdo)) $pdo->rollBack();
+            if ($pdo->inTransaction()) $pdo->rollBack();
             $errors[] = "Une erreur est survenue. Veuillez réessayer.";
         }
     }
 }
 
+// Pré-remplir avec les infos de l'utilisateur connecté
 $userInfo = [];
 if ($userId) {
     $stmt = $pdo->prepare("SELECT prenom, nom FROM utilisateurs WHERE id = ?");

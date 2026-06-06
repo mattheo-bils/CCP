@@ -1,11 +1,6 @@
 <?php
 /**
  * produit.php — Fiche produit détaillée
- *
- * Récupère le produit depuis la BDD via ?id=X.
- * Affiche : image, titre, prix, auteur, genre, description.
- * Affiche également des suggestions de la même catégorie.
- * Redirige vers catalogue.php si l'ID est invalide ou introuvable.
  */
 
 $basePath = '../';
@@ -16,14 +11,12 @@ $suggestions = [];
 try {
     require_once '../includes/db.php';
 
-    // Récupération et validation de l'ID produit
     $id = (int)($_GET['id'] ?? 0);
     if ($id <= 0) {
         header('Location: catalogue.php');
         exit;
     }
 
-    // Chargement du produit avec sa catégorie
     $stmt = $pdo->prepare("
         SELECT p.*, c.slug AS categorie_slug, c.nom AS categorie_nom
         FROM produits p
@@ -33,13 +26,11 @@ try {
     $stmt->execute([$id]);
     $produit = $stmt->fetch();
 
-    // Produit introuvable → retour au catalogue
     if (!$produit) {
         header('Location: catalogue.php');
         exit;
     }
 
-    // Suggestions : autres mangas de la même catégorie (dédoublonnés par titre)
     $stmt2 = $pdo->prepare("
         SELECT MIN(p.id) AS id, p.titre, MIN(p.tome) AS tome,
                MIN(p.prix) AS prix, MIN(p.image) AS image
@@ -53,22 +44,25 @@ try {
     $suggestions = $stmt2->fetchAll();
 
 } catch (Exception $e) {
-    // Fallback statique si la BDD est indisponible
     $produit = [
         'id'            => 7,
         'titre'         => 'Bleach',
         'auteur'        => 'Tite Kubo',
         'tome'          => 2,
         'prix'          => 7.80,
+        'stock'         => 5,
         'categorie_slug'=> 'shonen',
         'categorie_nom' => 'Shonen',
         'image'         => '../asset/img/bleach_tome_2_page_de_couverture.jpg',
-        'description'   => "Bleach raconte l'histoire d'Ichigo Kurosaki, un adolescent capable de voir les esprits.",
+        'description'   => "Bleach raconte l'histoire d'Ichigo Kurosaki.",
     ];
     $suggestions = [];
 }
 
-// Définition des métadonnées de la page
+$stock        = (int)($produit['stock'] ?? 0);
+$enRupture    = $stock <= 0;
+$stockFaible  = $stock > 0 && $stock <= 3;
+
 $pageTitle = htmlspecialchars($produit['titre']) . ' — Tome ' . (int)$produit['tome'];
 $pageCss   = "produit.css";
 $pageJs    = ["produit.js"];
@@ -77,7 +71,6 @@ require_once '../includes/header.php';
 ?>
 
 <main>
-    <!-- ── Fil d'Ariane ──────────────────────────────────── -->
     <nav class="chemin" aria-label="Fil d'Ariane">
         <a href="../index.php">Accueil</a>
         <span class="sep">/</span>
@@ -86,53 +79,88 @@ require_once '../includes/header.php';
         <span><?= htmlspecialchars($produit['titre']) ?> — Tome <?= (int)$produit['tome'] ?></span>
     </nav>
 
-    <!-- ── Fiche produit ─────────────────────────────────── -->
     <section class="produit">
-        <!-- Image principale -->
         <div class="image-col">
-            <img src="../<?= htmlspecialchars($produit['image']) ?>"
-                 alt="<?= htmlspecialchars($produit['titre']) ?> Tome <?= (int)$produit['tome'] ?>"
-                 class="image-affiche" id="main-img">
+            <?php if ($enRupture): ?>
+                <!-- Overlay rupture de stock sur l'image -->
+                <div style="position:relative;display:inline-block">
+                    <img src="../<?= htmlspecialchars($produit['image']) ?>"
+                         alt="<?= htmlspecialchars($produit['titre']) ?>"
+                         class="image-affiche" id="main-img"
+                         style="opacity:0.5">
+                    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
+                        <span style="background:var(--red);color:#fff;padding:10px 20px;border-radius:8px;font-weight:700;font-size:1rem;letter-spacing:0.05em">
+                            RUPTURE DE STOCK
+                        </span>
+                    </div>
+                </div>
+            <?php else: ?>
+                <img src="../<?= htmlspecialchars($produit['image']) ?>"
+                     alt="<?= htmlspecialchars($produit['titre']) ?>"
+                     class="image-affiche" id="main-img">
+            <?php endif; ?>
         </div>
 
-        <!-- Informations produit -->
         <div class="description">
             <h1><?= htmlspecialchars($produit['titre']) ?> — Tome <?= (int)$produit['tome'] ?></h1>
 
-            <!-- Prix -->
             <div class="prix-row">
                 <span class="prix-label">Prix unitaire</span>
                 <span class="prix-valeur"><?= number_format($produit['prix'], 2, ',', '') ?> €</span>
             </div>
 
-            <!-- Métadonnées -->
+            <!-- Badge stock -->
+            <div style="margin:12px 0">
+                <?php if ($enRupture): ?>
+                    <span style="background:rgba(192,57,43,0.2);color:var(--red-bright);padding:6px 14px;border-radius:20px;font-size:0.82rem;font-weight:700">
+                        ✕ Rupture de stock
+                    </span>
+                <?php elseif ($stockFaible): ?>
+                    <span style="background:rgba(226,176,74,0.2);color:var(--gold-light);padding:6px 14px;border-radius:20px;font-size:0.82rem;font-weight:700">
+                        ⚠ Plus que <?= $stock ?> exemplaire<?= $stock > 1 ? 's' : '' ?>
+                    </span>
+                <?php else: ?>
+                    <span style="background:rgba(39,174,96,0.2);color:#2ecc71;padding:6px 14px;border-radius:20px;font-size:0.82rem;font-weight:700">
+                        ✓ En stock (<?= $stock ?> disponibles)
+                    </span>
+                <?php endif; ?>
+            </div>
+
             <table class="meta-table">
                 <tr><td>Genre</td><td><?= htmlspecialchars($produit['categorie_nom']) ?></td></tr>
                 <tr><td>Auteur</td><td><?= htmlspecialchars($produit['auteur']) ?></td></tr>
                 <tr><td>Tome</td><td><?= (int)$produit['tome'] ?></td></tr>
             </table>
 
-            <!-- Description -->
             <p class="description-text"><?= htmlspecialchars($produit['description'] ?? '') ?></p>
 
-            <!-- Boutons d'action -->
             <div class="btn-suite">
-                <!-- Ajouter au panier (géré par header.js) -->
-                <button class="btn btn-outline btn-add"
-                        data-id="<?= (int)$produit['id'] ?>"
-                        data-titre="<?= htmlspecialchars($produit['titre']) ?>"
-                        data-prix="<?= number_format($produit['prix'], 2, ',', '') ?>"
-                        data-img="../<?= htmlspecialchars($produit['image']) ?>">
-                    <span class="material-symbols-outlined" style="vertical-align:middle;font-size:18px">shopping_cart</span>
-                    Ajouter au panier
-                </button>
-                <!-- Achat direct → passe l'id du produit à achat.php -->
-                <a href="achat.php?id=<?= (int)$produit['id'] ?>" class="btn btn-primary">Acheter maintenant</a>
+                <?php if ($enRupture): ?>
+                    <!-- Boutons désactivés si rupture de stock -->
+                    <button class="btn btn-outline" disabled
+                            style="opacity:0.4;cursor:not-allowed">
+                        Indisponible
+                    </button>
+                    <button class="btn btn-primary" disabled
+                            style="opacity:0.4;cursor:not-allowed">
+                        Indisponible
+                    </button>
+                <?php else: ?>
+                    <button class="btn btn-outline btn-add"
+                            data-id="<?= (int)$produit['id'] ?>"
+                            data-titre="<?= htmlspecialchars($produit['titre']) ?>"
+                            data-prix="<?= number_format($produit['prix'], 2, ',', '') ?>"
+                            data-img="../<?= htmlspecialchars($produit['image']) ?>">
+                        🛒 Ajouter au panier
+                    </button>
+                    <a href="achat.php?id=<?= (int)$produit['id'] ?>" class="btn btn-primary">
+                        Acheter maintenant
+                    </a>
+                <?php endif; ?>
             </div>
         </div>
     </section>
 
-    <!-- ── Suggestions (même catégorie) ─────────────────── -->
     <?php if (!empty($suggestions)): ?>
     <section class="suggestion">
         <h2 class="section-heading">Vous aimerez aussi</h2>
