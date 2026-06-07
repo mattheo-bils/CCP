@@ -1,79 +1,99 @@
 /**
- * achat.js — Page de finalisation de commande
+ * achat.js — Scripts de la page de finalisation de commande
  *
- * Responsabilités :
- *   - Formatage automatique du numéro de carte bancaire (espaces tous les 4 chiffres)
- *   - Formatage automatique de la date d'expiration (MM / AA)
- *   - Chargement du récap panier depuis localStorage pour les invités
- *     (uniquement si PHP n'a pas pu le charger depuis la BDD)
+ * Gère :
+ *   1. Le formatage automatique du numéro de carte bancaire
+ *   2. Le formatage automatique de la date d'expiration
+ *   3. Le chargement du récapitulatif depuis localStorage (invités uniquement)
  */
 
 // ── Formatage de la date d'expiration ─────────────────────
+
 /**
- * Appelé via oninput sur le champ #expiry.
- * Transforme "1225" en "12 / 25".
+ * Formate la saisie de la date d'expiration au format "MM / AA"
+ * Appelé via l'attribut oninput sur le champ #expiry dans le HTML.
+ * @param {HTMLInputElement} input - Le champ de saisie
  */
 function formatExpiry(input) {
-    let v = input.value.replace(/\D/g, ''); // Supprime tout sauf les chiffres
+    // Supprime tous les caractères non numériques
+    let v = input.value.replace(/\D/g, '');
+    // Insère " / " après les 2 premiers chiffres (le mois)
+    // Ex: "1225" devient "12 / 25"
     if (v.length >= 2) v = v.slice(0, 2) + ' / ' + v.slice(2, 4);
-    input.value = v;
+    input.value = v; // Met à jour la valeur affichée
 }
 
-// ── Formatage du numéro de carte ──────────────────────────
-// Ajoute un espace tous les 4 chiffres : "4242424242424242" → "4242 4242 4242 4242"
-const carteInput = document.getElementById('carte');
+// ── Formatage du numéro de carte bancaire ─────────────────
+
+const carteInput = document.getElementById('carte'); // Champ numéro de carte
 if (carteInput) {
     carteInput.addEventListener('input', function () {
+        // 1. Supprime tous les caractères non numériques
+        // 2. Ajoute un espace tous les 4 chiffres
+        // 3. trim() supprime l'espace éventuel à la fin
+        // Ex: "4242424242424242" → "4242 4242 4242 4242"
         this.value = this.value.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim();
     });
 }
 
-// ── Filtre numérique pour le CVV ─────────────────────────
-const cvvInput = document.getElementById('cvv');
+// ── Filtre numérique pour le CVV ──────────────────────────
+
+const cvvInput = document.getElementById('cvv'); // Champ CVV
 if (cvvInput) {
     cvvInput.addEventListener('input', function () {
-        this.value = this.value.replace(/\D/g, ''); // Chiffres uniquement
+        // N'autorise que les chiffres (supprime lettres et symboles)
+        this.value = this.value.replace(/\D/g, '');
     });
 }
 
-// ── Récap panier invité (chargement depuis localStorage) ──
+// ── Récapitulatif panier pour les invités ─────────────────
+
 /**
- * Ce bloc s'exécute uniquement si #recap-js-loading est présent dans le DOM,
- * c'est-à-dire quand PHP n'a pas pu récupérer le panier depuis la BDD
- * (utilisateur non connecté et pas d'achat direct).
+ * Ce bloc s'exécute uniquement si l'élément #recap-js-loading est présent.
+ * Cet élément est injecté par PHP quand il ne peut pas charger le panier
+ * depuis la BDD (utilisateur non connecté et pas d'achat direct ?id=X).
+ * Dans ce cas, on charge le panier depuis le localStorage.
  */
 (function () {
-    const jsLoading  = document.getElementById('recap-js-loading');
-    if (!jsLoading) return; // Le récap a déjà été rendu par PHP → rien à faire
+    const jsLoading  = document.getElementById('recap-js-loading'); // Placeholder "chargement..."
+    if (!jsLoading) return; // PHP a déjà rendu le récap → rien à faire
 
-    const recapItems  = document.getElementById('recap-items');
-    const totEl       = document.getElementById('recap-total');
-    const panierInput = document.getElementById('panier_json'); // Champ caché pour soumission
+    const recapItems  = document.getElementById('recap-items');  // Zone des articles
+    const totEl       = document.getElementById('recap-total'); // Affichage du total
+    const panierInput = document.getElementById('panier_json'); // Champ caché pour soumission PHP
 
     // Lecture du panier depuis le localStorage
     let cart = [];
-    try { cart = JSON.parse(localStorage.getItem('mm_cart') || '[]'); } catch (e) {}
+    try {
+        cart = JSON.parse(localStorage.getItem('mm_cart') || '[]');
+    } catch (e) {} // Tableau vide si JSON corrompu
 
+    // Cas panier vide
     if (!cart.length) {
         jsLoading.textContent = 'Votre panier est vide.';
         totEl.textContent     = '0,00 €';
         return;
     }
 
-    // Pré-remplir le champ caché pour que PHP reçoive le panier à la soumission
+    // Pré-remplissage du champ caché avec le contenu du panier
+    // PHP lira ce champ à la soumission pour enregistrer la commande
     if (panierInput) panierInput.value = JSON.stringify(cart);
 
-    // ── Construction du HTML du récap ─────────────────────
+    // ── Construction du HTML du récapitulatif ─────────────
     let html = '', total = 0;
-    cart.forEach(item => {
-        const p = parseFloat(String(item.prix).replace(',', '.')) || 0;
-        total  += p * (item.qty || 1);
 
+    cart.forEach(item => {
+        // Conversion du prix (gère "7,20" et "7.20")
+        const p = parseFloat(String(item.prix).replace(',', '.')) || 0;
+        total  += p * (item.qty || 1); // Accumulation du total
+
+        // Image du produit (si disponible)
         const img = item.img
             ? `<img src="${item.img}" alt="${item.titre}"
                     style="width:46px;height:66px;object-fit:cover;border-radius:6px;flex-shrink:0">`
             : '';
 
+        // Ligne HTML pour cet article
         html += `
         <div style="display:flex;align-items:center;gap:14px;padding:10px 0;
                     border-bottom:1px solid rgba(255,255,255,0.05)">
@@ -88,11 +108,14 @@ if (cvvInput) {
         </div>`;
     });
 
+    // Injection du HTML dans la page
     recapItems.innerHTML = html;
-    totEl.textContent    = total.toFixed(2).replace('.', ',') + ' €';
+    // Affichage du total formaté
+    totEl.textContent = total.toFixed(2).replace('.', ',') + ' €';
 
     // Mise à jour du champ caché juste avant la soumission du formulaire
-    // (au cas où le cart aurait changé entre le chargement et la soumission)
+    // Au cas où le contenu du panier aurait changé entre le chargement de la page
+    // et le clic sur "Confirmer"
     const form = document.getElementById('achat-form');
     if (form) {
         form.addEventListener('submit', () => {
