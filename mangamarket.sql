@@ -193,3 +193,12 @@ CREATE TABLE IF NOT EXISTS panier (
         FOREIGN KEY (produit_id) REFERENCES produits(id)
         ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
+UPDATE panier pa
+JOIN produits p ON p.id = pa.produit_id
+SET pa.quantite = p.stock
+WHERE pa.quantite > p.stock AND p.stock > 0;
+ 
+-- Supprime les lignes du panier dont le stock est à 0
+DELETE pa FROM panier pa
+JOIN produits p ON p.id = pa.produit_id
+WHERE p.stock = 0;

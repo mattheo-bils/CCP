@@ -20,6 +20,21 @@ try {
 
         // ── Lister ────────────────────────────────────────
         case 'list':
+            // Corriger les quantités qui dépassent le stock avant de retourner
+            $pdo->prepare("
+                UPDATE panier pa
+                JOIN produits p ON p.id = pa.produit_id
+                SET pa.quantite = p.stock
+                WHERE pa.utilisateur_id = ? AND pa.quantite > p.stock AND p.stock > 0
+            ")->execute([$userId]);
+
+            // Supprimer les articles en rupture de stock du panier
+            $pdo->prepare("
+                DELETE pa FROM panier pa
+                JOIN produits p ON p.id = pa.produit_id
+                WHERE pa.utilisateur_id = ? AND p.stock = 0
+            ")->execute([$userId]);
+
             $stmt = $pdo->prepare("
                 SELECT pa.produit_id AS id, p.titre, p.prix, p.image,
                        pa.quantite AS qty, p.stock
