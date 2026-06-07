@@ -77,10 +77,12 @@ try {
                 exit;
             }
 
+            // Insertion ou mise à jour avec plafond au stock
             $stmt = $pdo->prepare("
                 INSERT INTO panier (utilisateur_id, produit_id, quantite)
                 VALUES (?, ?, ?)
-                ON DUPLICATE KEY UPDATE quantite = quantite + VALUES(quantite)
+                ON DUPLICATE KEY UPDATE
+                    quantite = LEAST(quantite + VALUES(quantite), (SELECT stock FROM produits WHERE id = VALUES(produit_id)))
             ");
             $stmt->execute([$userId, $produitId, $quantite]);
             echo json_encode(['connected' => true, 'success' => true]);

@@ -64,7 +64,7 @@ document.addEventListener('click', async e => {
     const img   = btn.dataset.img   || '';
 
     const inViews = window.location.pathname.includes('/views/');
-    const apiBase = inViews ? '../api/panier.php' : 'api/panier.php';
+    const apiBase = inViews ? '../api/panier_api.php' : 'api/panier_api.php';
 
     try {
         const res  = await fetch(apiBase + '?action=list');
