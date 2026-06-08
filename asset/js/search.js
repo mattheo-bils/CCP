@@ -113,7 +113,6 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     function rechercher(q) {
         clearTimeout(debounceTimer); // Annule le timer précédent
-
         // Ne rien faire si le terme fait moins de 2 caractères
         if (q.trim().length < 2) {
             fermer();
